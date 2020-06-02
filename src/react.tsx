@@ -1,11 +1,12 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import Editor from './Components/Editor';
 
 const Index = () => {
   return (
     <>
-      <h1>Is this for real?</h1>
-      <div>Hello React!</div>
+      <h1>Sick note app</h1>
+      <Editor />
     </>
   );
 };
