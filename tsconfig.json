@@ -1,6 +1,11 @@
 {
   "compilerOptions": {
+    "outDir": "./dist",
+    "target": "es5",
+    "allowJs": true,
     "jsx": "react",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false
   }
 }
