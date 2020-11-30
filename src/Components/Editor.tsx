@@ -3,84 +3,35 @@ import Quill from 'quill';
 import 'quill/dist/quill.bubble.css';
 import { useState } from 'react';
 import styled from 'styled-components';
-const editorOptions = {
-  readOnly: false,
-  // bounds: '.' + gridBem.block(),
-  theme: 'snow',
-  modules: {
-    toolbar: [
-      [
-        { header: '1' },
-        { header: '2' },
-        { font: ['', 'open-sans', 'roboto', 'proza-libre'] },
-        { size: ['1em', '1.25em', '1.5em', '2em', '3em', '4em'] },
-      ],
-      ['bold', 'italic', 'underline'],
-      [{ color: [] }, { background: [] }],
-      [{ align: ['', 'center', 'right'] }],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-    ],
-  },
-  formats: [
-    'align',
-    'background',
-    'header',
-    'font',
-    'size',
-    'align',
-    'bold',
-    'italic',
-    'underline',
-    'strike',
-    'script',
-    'list',
-    'bullet',
-    'indent',
-    'link',
-    'color',
-    'clean',
-  ],
-};
+import ElementPosition from '../Models/ElementPosition';
+import { editorOptions } from '../config/quillConfig';
+
+const draggingColor = '#0178ba';
 
 const EditorWrapper = styled.div.attrs((props) => ({
   style: {
     left: props.positionOfset.x,
     top: props.positionOfset.y,
+    width: '500px',
   },
 }))`
   position: absolute;
   &:hover {
     .header {
-      background: red;
+      background: ${draggingColor};
     }
   }
   .header {
-    height: 10px;
+    height: 25px;
+    background: ${(props) => (props.dragging ? draggingColor : 'transparent')};
   }
 `;
-
-class ElementPosition {
-  x;
-  y;
-  constructor(x, y) {
-    this.x = this.min(x);
-    this.y = this.min(y);
-  }
-
-  add(xOfset, yOfset) {
-    this.x = this.min(this.x + xOfset);
-    this.y = this.min(this.y + yOfset);
-  }
-
-  min(value, minValue = 0) {
-    return value < minValue ? minValue : value;
-  }
-}
 
 export default function Editor() {
   const editorRef = useRef();
   const [editor, setEditor] = useState(null);
 
+  const [dragging, setDragging] = useState(false);
   const position = useRef(new ElementPosition(100, 100));
   const lastPosition = useRef(position.current);
   const [currentPosition, setCurrentPosition] = useState(position.current);
@@ -108,6 +59,7 @@ export default function Editor() {
     e.preventDefault();
     // get the mouse cursor position at startup:
     lastPosition.current = new ElementPosition(e.clientX, e.clientY);
+    setDragging(true);
     document.onmouseup = closeDragElement;
     // call a function whenever the cursor moves:
     document.onmousemove = elementDrag;
@@ -127,20 +79,20 @@ export default function Editor() {
   }
 
   function closeDragElement() {
+    setDragging(false);
     document.onmouseup = null;
     document.onmousemove = null;
   }
 
   useEffect(() => {
     const editor = new Quill(editorRef.current, editorOptions);
-    console.log(editor);
     editor.on('text-change', onChange);
     setEditor(editor);
     return () => {};
   }, []);
 
   return (
-    <EditorWrapper positionOfset={currentPosition}>
+    <EditorWrapper positionOfset={currentPosition} dragging={dragging}>
       <div>{`Current: ${currentPosition.x}, ${currentPosition.y}`}</div>
       <div className="header" onMouseDown={startDragging} />
       <div ref={editorRef} />

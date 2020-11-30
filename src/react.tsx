@@ -1,12 +1,11 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import Editor from './Components/Editor';
+import Page from './Components/Page';
 
 const Index = () => {
   return (
     <>
-      <h1>Sick note app</h1>
-      <Editor />
+      <Page title="Test" />
     </>
   );
 };
