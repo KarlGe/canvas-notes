@@ -1,6 +1,5 @@
 export const editorOptions = {
   readOnly: false,
-  // bounds: '.' + gridBem.block(),
   theme: 'snow',
   modules: {
     toolbar: [
