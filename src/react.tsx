@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { createGlobalStyle } from 'styled-components'
 import Page from './Components/Page';
+import { initializeQuill } from './config/quillConfig';
 
 const GlobalStyle = createGlobalStyle`
   html, body, #app {
@@ -17,5 +18,7 @@ const Index = () => {
     </>
   );
 };
+
+initializeQuill();
 
 ReactDOM.render(<Index />, document.getElementById('app'));

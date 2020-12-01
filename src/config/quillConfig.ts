@@ -1,19 +1,12 @@
-export const editorOptions = {
+import Quill from 'quill';
+
+export const getEditorOptions = (uuid) => ({
   readOnly: false,
   theme: 'snow',
   modules: {
-    toolbar: [
-      [
-        { header: '1' },
-        { header: '2' },
-        { font: ['', 'open-sans', 'roboto', 'proza-libre'] },
-        { size: ['1em', '1.25em', '1.5em', '2em', '3em', '4em'] },
-      ],
-      ['bold', 'italic', 'underline'],
-      [{ color: [] }, { background: [] }],
-      [{ align: ['', 'center', 'right'] }],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-    ],
+    toolbar: {
+      container: `#toolbar-${uuid}`,
+    },
   },
   formats: [
     'align',
@@ -34,4 +27,12 @@ export const editorOptions = {
     'color',
     'clean',
   ],
+});
+
+export const initializeQuill = () => {
+  // Add fonts to whitelist
+  var Font = Quill.import('formats/font');
+  // We do not add Aref Ruqaa since it is the default
+  Font.whitelist = ['mirza', 'roboto'];
+  Quill.register(Font, true);
 };

@@ -1,10 +1,12 @@
-import React, { useRef } from 'react';
+import React, { useRef, ReactText } from 'react';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import styled from 'styled-components';
 import EditorData from '../Models/EditorData';
 import ElementPosition from '../Models/ElementPosition';
-import Editor from './Editor';
+import Editor, { editorHeaderHeight } from './Editor/Editor';
+import Toolbar from './Editor/Toolbar';
+import { uuidv4 } from '../helpers/uuid';
 
 const Document = styled.div`
   width: 100%;
@@ -21,25 +23,40 @@ function Page(props: { title: string }) {
   const { title } = props;
   const contentRef = useRef(null);
   const [editors, setEditors] = useState<EditorData[]>([]);
-  const [mouseDownEvent, setMouseDownEvent] = useState(null);
+  const [activeEditor, setActiveEditor] = useState<string>();
+  const [editing, setEditing] = useState(false);
 
   const documentMouseDown = (e) => {
-    setMouseDownEvent(e);
+    if (editing) {
+      return;
+    }
     const { offsetTop, offsetLeft } = contentRef.current;
 
     const { clientX, clientY } = e;
 
     const editorData = new EditorData(
-      new ElementPosition(clientX - offsetLeft, clientY - offsetTop),
+      uuidv4(),
+      new ElementPosition(
+        clientX - offsetLeft,
+        clientY - offsetTop + editorHeaderHeight
+      ),
       e.target
     );
+    setActiveEditor(editorData.uuid);
     setEditors((prevEditors) => [...prevEditors, editorData]);
   };
   const editorElements = editors.map((editor) => (
-    <Editor editorData={editor} initialEvent={mouseDownEvent} currentIncrement={20} />
+    <Editor
+      isActive={activeEditor === editor.uuid}
+      key={editor.uuid as ReactText}
+      setEditing={setEditing}
+      editorData={editor}
+      currentIncrement={20}
+      setActiveEditor={setActiveEditor}
+    />
   ));
   return (
-    <Document>
+    <Document onClick={() => setActiveEditor(null)}>
       <h1>{title}</h1>
       <div
         className="documentContent"
