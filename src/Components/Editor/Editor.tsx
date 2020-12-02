@@ -3,14 +3,16 @@ import Quill from 'quill';
 import 'quill/dist/quill.bubble.css';
 import { useState } from 'react';
 import styled from 'styled-components';
-import ElementPosition from '../../Models/ElementPosition';
-import { getEditorOptions } from '../../config/quillConfig';
-import EditorData from '../../Models/EditorData';
+import ElementPosition from 'Models/ElementPosition';
+import EditorData from 'Models/EditorData';
+import { getEditorOptions } from 'Config/quillConfig';
 import Toolbar from './Toolbar';
+import CloseIcon from 'Assets/icons/close.svg';
 
 export const editorHeaderHeight = 25;
 const borderWidth = 1;
-const draggingColor = '#0178ba';
+const headerColor = '#0178ba';
+const headerDarkColor = '#00598a';
 const borderColor = '#ccc';
 
 type StyledProps = {
@@ -28,10 +30,12 @@ const EditorWrapper = styled.div.attrs((props: StyledProps) => ({
   },
 }))`
   position: absolute;
+  z-index: 0;
   box-sizing: border-box;
   &:hover {
     .header {
-      background: ${(props) => !props.editing && draggingColor};
+      background: ${(props) => !props.editing && headerColor};
+      cursor: move;
     }
     .ql-container {
       border: ${borderWidth}px solid ${borderColor};
@@ -47,13 +51,31 @@ const EditorWrapper = styled.div.attrs((props: StyledProps) => ({
   .header {
     height: ${editorHeaderHeight}px;
     background: ${(props: StyledProps) =>
-      props.dragging && !props.editing ? draggingColor : 'transparent'};
+      props.dragging && !props.editing ? headerColor : 'transparent'};
     position: absolute;
     top: -${editorHeaderHeight}px;
     left: 0;
     right: 0;
+    .close-button {
+      display: none;
+      position: absolute;
+      right: 0;
+      height: 100%;
+      border: none;
+      background: ${headerColor};
+      border-left: 1px solid ${headerDarkColor};
+      &:hover {
+        background: ${headerDarkColor};
+      }
+      > svg:hover {
+        cursor: pointer;
+      }
+    }
     &:hover {
-      background: ${draggingColor};
+      background: ${headerColor};
+      .close-button {
+        display: block;
+      }
     }
   }
   .ql-toolbar {
@@ -78,6 +100,7 @@ export default function Editor(props: {
   setEditing: Function;
   isActive: Boolean;
   setActiveEditor: Function;
+  deleteEditor: Function;
 }) {
   const {
     editorData,
@@ -85,6 +108,7 @@ export default function Editor(props: {
     isActive,
     setEditing,
     setActiveEditor,
+    deleteEditor,
   } = props;
 
   const editorElement = useRef();
@@ -171,8 +195,6 @@ export default function Editor(props: {
     );
     editor.on('text-change', onChange);
     editor.on('selection-change', function (range, oldRange, source) {
-      console.log(source);
-
       if (range === null && oldRange !== null) {
         setEditingState(false);
       } else if (range !== null && oldRange === null) {
@@ -203,7 +225,14 @@ export default function Editor(props: {
         editing={editingLocal}
         isActive={isActive}
       >
-        <div className="header" onMouseDown={startDraggingEvent} />
+        <div className="header" onMouseDown={startDraggingEvent}>
+          <button
+            onClick={() => deleteEditor(editorData.uuid)}
+            className="close-button"
+          >
+            <CloseIcon />
+          </button>
+        </div>
         <div className="debug">{`Active: ${isActive} Editing: ${editingLocal} Position: ${currentPosition.x}, ${currentPosition.y}`}</div>
         <div ref={editorElement} />
       </EditorWrapper>

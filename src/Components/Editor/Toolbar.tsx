@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { documentColor } from 'Components/Page';
 
 type StyledProps = {
   active: Boolean;
@@ -8,6 +9,9 @@ type StyledProps = {
 
 const ToolbarWrapper = styled.div<StyledProps>`
   display: ${(props) => (props.active ? 'block' : 'none')};
+  position: relative;
+  z-index: 100;
+  background-color: ${documentColor};
 `;
 
 function Toolbar(props: { toolbarId: string; active: Boolean }) {
