@@ -1,3 +1,5 @@
+const path = require('path');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = [
@@ -26,6 +28,7 @@ module.exports = [
     devtool: 'source-map',
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
+      plugins: [new TsconfigPathsPlugin()],
     },
     module: {
       rules: [
@@ -37,6 +40,20 @@ module.exports = [
         {
           test: /\.css$/i,
           use: ['style-loader', 'css-loader'],
+        },
+        {
+          test: /\.svg$/,
+          use: ['@svgr/webpack'],
+        },
+        {
+          /**
+           * If we want the svg to be loaded as inline code, for example for URL in CSSwe need to add .inline to the file name
+           */
+          test: /\.inline.svg$/,
+          issuer: {
+            test: /\.ts(x?)$/,
+          },
+          use: 'url-loader',
         },
       ],
     },

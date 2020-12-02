@@ -6,6 +6,16 @@
     "jsx": "react",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "baseUrl": ".",
+    "paths": {
+      "Assets/*": ["./src/assets/*"],
+      "Components/*": ["./src/components/*"],
+      "UI/*": ["./src/components/ui/*"],
+      "Config/*": ["./src/config/*"],
+      "Helpers/*": ["./src/helpers/*"],
+      "Hooks/*": ["./src/hooks/*"],
+      "Models/*": ["./src/models/*"],
+    }
   }
 }
