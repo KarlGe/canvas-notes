@@ -6,14 +6,13 @@ import EditorData from 'Models/EditorData';
 import ElementPosition from 'Models/ElementPosition';
 import { uuidv4 } from '../helpers/uuid';
 import CursorAddIcon from 'Assets/icons/cursor-add.inline.svg';
-import Editor, { editorHeaderHeight } from './Editor/Editor';
+import Editor from './Editor/Editor';
 import EditableField from './UI/EditableField/EditableField';
+import { settings } from 'Config/baseConfig';
 
 type StyledTypes = {
   hasActiveEditor: Boolean;
 };
-
-export const documentColor = '#eee';
 
 const Document = styled.div<StyledTypes>`
   width: 100%;
@@ -21,7 +20,7 @@ const Document = styled.div<StyledTypes>`
   .documentContent {
     width: 100%;
     height: 100%;
-    background-color: ${documentColor};
+    background-color: ${settings.colors.documentColor};
     position: relative;
     &:hover {
       cursor: ${(props) =>
@@ -31,7 +30,7 @@ const Document = styled.div<StyledTypes>`
 `;
 
 const PageTitle = styled(EditableField)`
-  background: ${documentColor};
+  background: ${settings.colors.documentColor};
   display: block;
   input,
   h1 {
@@ -43,7 +42,7 @@ const PageTitle = styled(EditableField)`
     font-size: 2rem;
     font-weight: normal;
     margin-bottom: 0;
-    margin-top: 0.5rem;
+    margin-top: 1.5rem;
     color: #303030;
     font-family: sans-serif;
     padding: 0.25rem;
@@ -82,7 +81,7 @@ function Page(props: { initialTitle: string }) {
       uuidv4(),
       new ElementPosition(
         clientX - offsetLeft,
-        clientY - offsetTop + editorHeaderHeight
+        clientY - offsetTop + settings.sizes.editorHeaderHeight
       ),
       e.target
     );

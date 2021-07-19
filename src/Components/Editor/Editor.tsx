@@ -6,10 +6,10 @@ import styled from 'styled-components';
 import ElementPosition from 'Models/ElementPosition';
 import EditorData from 'Models/EditorData';
 import { getEditorOptions } from 'Config/quillConfig';
+import { settings } from 'Config/baseConfig';
 import Toolbar from './Toolbar';
 import CloseIcon from 'Assets/icons/close.svg';
 
-export const editorHeaderHeight = 25;
 const borderWidth = 1;
 const headerColor = '#0178ba';
 const headerDarkColor = '#00598a';
@@ -45,15 +45,15 @@ const EditorWrapper = styled.div.attrs((props: StyledProps) => ({
     display: none;
     position: absolute;
     width: max-content;
-    top: -${editorHeaderHeight * 2}px;
+    top: -${settings.sizes.editorHeaderHeight * 2}px;
     z-index: 0;
   }
   .header {
-    height: ${editorHeaderHeight}px;
+    height: ${settings.sizes.editorHeaderHeight}px;
     background: ${(props: StyledProps) =>
       props.dragging && !props.editing ? headerColor : 'transparent'};
     position: absolute;
-    top: -${editorHeaderHeight}px;
+    top: -${settings.sizes.editorHeaderHeight}px;
     left: 0;
     right: 0;
     .close-button {
@@ -78,13 +78,6 @@ const EditorWrapper = styled.div.attrs((props: StyledProps) => ({
       }
     }
   }
-  .ql-toolbar {
-    position: absolute;
-    width: max-content;
-    top: -${editorHeaderHeight}px;
-    display: ${(props) => (props.editing ? 'block' : 'none')};
-  }
-
   .ql-container {
     box-sizing: border-box;
     border: ${(props) =>
@@ -127,7 +120,7 @@ export default function Editor(props: {
   const [dragging, setDragging] = useState(false);
   const position = useRef(editorData.position);
   const lastPosition = useRef(
-    editorData.getInitialClickPosition(0, editorHeaderHeight * -1)
+    editorData.getInitialClickPosition(0, settings.sizes.editorHeaderHeight * -1)
   );
   const [currentPosition, setCurrentPosition] = useState(position.current);
 
