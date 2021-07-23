@@ -7,14 +7,23 @@ module.exports = [
     mode: 'development',
     entry: './src/electron.ts',
     target: 'electron-main',
+    resolve: {
+      extensions: ['.tsx', '.ts', '.js'],
+      plugins: [new TsconfigPathsPlugin()],
+    },
     module: {
       rules: [
         {
-          test: /\.ts$/,
+          test: /\.ts(x?)$/,
           include: /src/,
           use: [{ loader: 'ts-loader' }],
         },
       ],
+    },
+    node: {
+      global: true,
+      __dirname: true,
+      __filename: true,
     },
     output: {
       path: __dirname + '/dist',

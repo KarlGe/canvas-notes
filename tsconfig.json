@@ -9,6 +9,7 @@
     "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {
+      "MainProcess/*": ["./src/main-process/*"],
       "Assets/*": ["./src/assets/*"],
       "Components/*": ["./src/components/*"],
       "UI/*": ["./src/components/ui/*"],

@@ -3,6 +3,7 @@ const { app, BrowserWindow, session } = require('electron');
 const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
 const path = require('path')
 const os = require('os')
+const { setupStore } = require('MainProcess/store/store');
 
 
 /* This currently isn't working 
@@ -27,6 +28,7 @@ async function createWindow() {
   // and load the index.html of the app.
   win.loadFile('index.html');
 }
+setupStore();
 console.log(os.homedir());
 
 app.whenReady().then(loadExtensions).then(createWindow)
