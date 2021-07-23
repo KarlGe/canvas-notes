@@ -2,7 +2,7 @@ var levelup = require('levelup');
 var leveldown = require('leveldown');
 
 export function setupStore() {
-  var db = levelup(leveldown('./mydb'));
+  var db = levelup(leveldown('./documents-db'));
 
 //   // 2) Put a key & value
 //   db.put('name', 'levelup', function (err) {
