@@ -4,11 +4,12 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import EditorData from 'Models/EditorData';
 import ElementPosition from 'Models/ElementPosition';
-import { uuidv4 } from '../helpers/uuid';
+import { getUUID } from 'Helpers/uuid';
 import CursorAddIcon from 'Assets/icons/cursor-add.inline.svg';
 import Editor from './Editor/Editor';
 import EditableField from './UI/EditableField/EditableField';
 import { settings } from 'Config/baseConfig';
+import EditorDocument from 'Models/EditorDocument';
 
 type StyledTypes = {
   hasActiveEditor: Boolean;
@@ -17,6 +18,7 @@ type StyledTypes = {
 const Document = styled.div<StyledTypes>`
   width: 100%;
   height: 100%;
+  position: relative;
   .documentContent {
     width: 100%;
     height: 100%;
@@ -59,13 +61,23 @@ const PageTitle = styled(EditableField)`
   }
 `;
 
-function Page(props: { initialTitle: string }) {
-  const { initialTitle } = props;
-  const [title, setTitle] = useState(initialTitle);
+interface PageProps {
+  editorDocument: EditorDocument;
+  onChangeTitle: (uuid: string, newTitle: string) => void;
+}
+
+function Page(props: PageProps) {
+  const { editorDocument, onChangeTitle } = props;
   const contentRef = useRef(null);
   const [editors, setEditors] = useState<EditorData[]>([]);
   const [activeEditor, setActiveEditor] = useState<string>();
   const [editing, setEditing] = useState(false);
+
+  if (!editorDocument) {
+    return null;
+  }
+
+  const pageTitle = editorDocument.metaData.title;
 
   const hasActiveEditor = activeEditor !== null;
 
@@ -78,7 +90,7 @@ function Page(props: { initialTitle: string }) {
     const { clientX, clientY } = e;
 
     const editorData = new EditorData(
-      uuidv4(),
+      getUUID(),
       new ElementPosition(
         clientX - offsetLeft,
         clientY - offsetTop + settings.sizes.editorHeaderHeight
@@ -110,8 +122,13 @@ function Page(props: { initialTitle: string }) {
       hasActiveEditor={hasActiveEditor}
       onMouseUp={() => setActiveEditor(null)}
     >
-      <PageTitle value={title} onChange={(newValue) => setTitle(newValue)}>
-        <h1>{title}</h1>
+      <PageTitle
+        value={pageTitle}
+        onChange={(newValue) =>
+          onChangeTitle(editorDocument.metaData.uuid, newValue)
+        }
+      >
+        <h1>{pageTitle}</h1>
       </PageTitle>
       <div
         className="documentContent"

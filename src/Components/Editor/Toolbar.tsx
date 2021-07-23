@@ -11,10 +11,9 @@ const ToolbarWrapper = styled.div<StyledProps>`
   display: ${(props) => (props.active ? 'block' : 'none')};
   position: fixed;
   top: 0;
-  left: 0;
+  left: calc(200px + 1rem);
   z-index: 100;
   background: ${settings.colors.documentColor};
-  box-shadow: 0 0 5px #000;
   width: 100%;
 `;
 
