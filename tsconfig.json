@@ -8,6 +8,7 @@
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": false,
     "baseUrl": ".",
+    "sourceMap": true,
     "paths": {
       "MainProcess/*": ["./src/main-process/*"],
       "Assets/*": ["./src/assets/*"],
@@ -16,7 +17,7 @@
       "Config/*": ["./src/config/*"],
       "Helpers/*": ["./src/helpers/*"],
       "Hooks/*": ["./src/hooks/*"],
-      "Models/*": ["./src/models/*"],
+      "Models/*": ["./src/models/*"]
     }
   }
 }

@@ -2,7 +2,7 @@
   "name": "canvas-notes",
   "version": "0.0.1",
   "description": "A note app",
-  "main": "index.js",
+  "main": "dist/electron.js",
   "author": "Karlge <karlgeorgsen@gmail.com>",
   "license": "MIT",
   "scripts": {

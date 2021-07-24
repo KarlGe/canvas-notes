@@ -7,6 +7,7 @@ module.exports = [
     mode: 'development',
     entry: './src/electron.ts',
     target: 'electron-main',
+    devtool: 'source-map',
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
       plugins: [new TsconfigPathsPlugin()],
