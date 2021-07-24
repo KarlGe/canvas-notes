@@ -4,6 +4,8 @@ import EditorDocument from 'Models/EditorDocument';
 import DocumentMetadata from 'Models/DocumentMetadata';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import ipcMessages from 'Helpers/ipcMessages';
+import { IPCRender } from 'Helpers/ipcRenderer';
 
 const Wrapper = styled.div`
   display: grid;
@@ -16,20 +18,25 @@ export const ApplicationWrapper = (props: {}) => {
   const [documents, setDocuments] = useState<DocumentMetadata[]>([]);
   const [currentDocument, setCurrentDocument] = useState(null);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    console.log('Test');
+    IPCRender.getAllDocuments();
+  }, []);
 
   const onAddDocument = () => {
     const documentMetadata = new DocumentMetadata();
     setDocuments([...documents, documentMetadata]);
     setCurrentDocument(new EditorDocument(documentMetadata));
   };
-  
+
   const onChangeTitle = (uuid: string, newTitle: string) => {
     const newDocuments = [...documents];
-    const documentIndex = documents.findIndex(document => document.uuid === uuid);
+    const documentIndex = documents.findIndex(
+      (document) => document.uuid === uuid
+    );
     newDocuments[documentIndex].title = newTitle;
     setDocuments(newDocuments);
-  }
+  };
 
   return (
     <Wrapper>
