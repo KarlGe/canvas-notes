@@ -63,7 +63,7 @@ const PageTitle = styled(EditableField)`
 
 interface PageProps {
   editorDocument: EditorDocument;
-  onChangeTitle: (uuid: string, newTitle: string) => void;
+  onChangeTitle: (changedDocument: EditorDocument, newTitle: string) => void;
 }
 
 function Page(props: PageProps) {
@@ -124,9 +124,7 @@ function Page(props: PageProps) {
     >
       <PageTitle
         value={pageTitle}
-        onChange={(newValue) =>
-          onChangeTitle(editorDocument.metaData.uuid, newValue)
-        }
+        onChange={(newValue) => onChangeTitle(editorDocument, newValue)}
       >
         <h1>{pageTitle}</h1>
       </PageTitle>

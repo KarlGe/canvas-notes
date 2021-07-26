@@ -11,16 +11,17 @@ const SidebarWrapper = styled.div`
 interface SidebarProps {
   documents: DocumentMetadata[];
   addDocument: () => void;
+  onOpenDocument: (metaData: DocumentMetadata) => void;
 }
 
 export default function Sidebar(props: SidebarProps): ReactElement {
-  const { documents, addDocument } = props;
+  const { documents, addDocument, onOpenDocument } = props;
   return (
     <SidebarWrapper>
       <p>Test</p>
       <ul>
         {documents.map((metaData) => (
-          <li>{metaData.title}</li>
+          <li onClick={() => onOpenDocument(metaData)}>{metaData.title}</li>
         ))}
       </ul>
       <button type="button" onClick={addDocument}>

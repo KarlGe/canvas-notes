@@ -3,9 +3,13 @@ import { getUUID } from 'Helpers/uuid';
 export default class DocumentMetadata {
   uuid: string;
   title: string;
+  parentId: string;
 
-  constructor(title: string = 'New Document') {
-    this.uuid = getUUID();
+  constructor(title: string = 'New Document', uuid: string = null, parentId: string = undefined) {
     this.title = title;
+    this.parentId = parentId;
+    if (uuid == null) {
+      this.uuid = getUUID();
+    }
   }
 }

@@ -6,6 +6,8 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ipcMessages from 'Helpers/ipcMessages';
 import { IPCRender } from 'Helpers/ipcRenderer';
+import { useDebouncedEffect } from 'Hooks/useDebouncedEffect';
+import { useDocumentHandler } from 'Hooks/useDocumentHandler';
 
 const Wrapper = styled.div`
   display: grid;
@@ -15,34 +17,37 @@ const Wrapper = styled.div`
 `;
 
 export const ApplicationWrapper = (props: {}) => {
-  const [documents, setDocuments] = useState<DocumentMetadata[]>([]);
-  const [currentDocument, setCurrentDocument] = useState(null);
+  const { documents, currentDocument, onOpenDocument } = useDocumentHandler();
 
-  useEffect(() => {
-    console.log('Test');
-    IPCRender.getAllDocuments();
-  }, []);
+  const documentMetdata = currentDocument ? currentDocument.metaData : null;
 
   const onAddDocument = () => {
-    const documentMetadata = new DocumentMetadata();
-    setDocuments([...documents, documentMetadata]);
-    setCurrentDocument(new EditorDocument(documentMetadata));
+    // const documentMetadata = new DocumentMetadata();
+    // setDocuments([...documents, documentMetadata]);
+    // const newDocument = new EditorDocument(documentMetadata);
+    // setCurrentDocument(newDocument);
+    // IPCRender.saveDocument(newDocument);
   };
 
-  const onChangeTitle = (uuid: string, newTitle: string) => {
-    const newDocuments = [...documents];
-    const documentIndex = documents.findIndex(
-      (document) => document.uuid === uuid
-    );
-    newDocuments[documentIndex].title = newTitle;
-    setDocuments(newDocuments);
+  const onChangeTitle = (
+    documentToChange: EditorDocument,
+    newTitle: string
+  ) => {
+    // const newDocuments = [...documents];
+    // const newDocument = { ...documentToChange };
+    // newDocument.metaData.title = newTitle;
+    // const documentIndex = documents.findIndex(
+    //   (document) => document.uuid === documentToChange.metaData.uuid
+    // );
+    // newDocuments[documentIndex] = newDocument.metaData;
+    // setDocuments(newDocuments);
   };
 
   return (
     <Wrapper>
-      <Sidebar documents={documents} addDocument={onAddDocument} />
+      <Sidebar documents={documents} addDocument={onAddDocument} onOpenDocument={onOpenDocument}/>
       <Page
-        key={currentDocument ? currentDocument.uuid : null}
+        key={documentMetdata ? documentMetdata.uuid : null}
         editorDocument={currentDocument}
         onChangeTitle={onChangeTitle}
       />
