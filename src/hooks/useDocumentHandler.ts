@@ -1,11 +1,12 @@
 import { IPCRender } from 'Helpers/ipcRenderer';
 import DocumentMetadata from 'Models/DocumentMetadata';
 import EditorDocument from 'Models/EditorDocument';
+import { DocumentList } from 'Models/Types';
 import { useEffect, useRef, useState } from 'react';
 import { useDebouncedEffect } from './useDebouncedEffect';
 
 export const useDocumentHandler = () => {
-  const [documents, setDocuments] = useState<DocumentMetadata[]>([]);
+  const [documentList, setDocumentList] = useState<DocumentList>(null);
   const [currentDocumentUUID, setCurrentDocumentUUID] =
     useState<string>(undefined);
   const [currentDocument, setCurrentDocument] =
@@ -15,10 +16,8 @@ export const useDocumentHandler = () => {
   const documentTitle = documentMetdata ? documentMetdata.title : null;
 
   useEffect(() => {
-    console.log('Test');
     IPCRender.getAllDocuments().then((documents) => {
-      console.log(documents);
-      setDocuments(documents.map((document) => document.metaData));
+      setDocumentList(documents);
     });
   }, []);
 
@@ -44,5 +43,23 @@ export const useDocumentHandler = () => {
     setCurrentDocumentUUID(metaData.uuid);
   };
 
-  return { documents, currentDocument, onOpenDocument };
+  const onSaveDocument = (document: EditorDocument) => {
+    setDocumentList({ ...documentList, [document.metaData.uuid]: document.metaData });
+    IPCRender.saveDocument(document);
+  };
+
+  const onCreateDocument = () => {
+    const documentMetadata = new DocumentMetadata();
+    const newDocument = new EditorDocument(documentMetadata);
+    onSaveDocument(newDocument);
+    setCurrentDocument(newDocument);
+  };
+
+  return {
+    documentList,
+    currentDocument,
+    onOpenDocument,
+    onCreateDocument,
+    onSaveDocument,
+  };
 };

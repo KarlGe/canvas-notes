@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron';
 import EditorDocument from 'Models/EditorDocument';
+import { DocumentList } from 'Models/Types';
 import ipcMessages from './ipcMessages';
 
 export class IPCRender {
@@ -18,7 +19,7 @@ export class IPCRender {
       uuid
     );
   }
-  public static async getAllDocuments(): Promise<EditorDocument[]> {
+  public static async getAllDocuments(): Promise<DocumentList> {
     return this.sendMessage(
       ipcMessages.getAllMessage,
       ipcMessages.getAllReply,

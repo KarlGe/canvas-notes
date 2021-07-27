@@ -1,12 +1,8 @@
 import Page from 'Components/Page';
 import Sidebar from 'Components/Sidebar/Sidebar';
 import EditorDocument from 'Models/EditorDocument';
-import DocumentMetadata from 'Models/DocumentMetadata';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import ipcMessages from 'Helpers/ipcMessages';
-import { IPCRender } from 'Helpers/ipcRenderer';
-import { useDebouncedEffect } from 'Hooks/useDebouncedEffect';
 import { useDocumentHandler } from 'Hooks/useDocumentHandler';
 
 const Wrapper = styled.div`
@@ -17,35 +13,34 @@ const Wrapper = styled.div`
 `;
 
 export const ApplicationWrapper = (props: {}) => {
-  const { documents, currentDocument, onOpenDocument } = useDocumentHandler();
+  const {
+    documentList,
+    currentDocument,
+    onOpenDocument,
+    onCreateDocument,
+    onSaveDocument,
+  } = useDocumentHandler();
 
   const documentMetdata = currentDocument ? currentDocument.metaData : null;
-
-  const onAddDocument = () => {
-    // const documentMetadata = new DocumentMetadata();
-    // setDocuments([...documents, documentMetadata]);
-    // const newDocument = new EditorDocument(documentMetadata);
-    // setCurrentDocument(newDocument);
-    // IPCRender.saveDocument(newDocument);
-  };
 
   const onChangeTitle = (
     documentToChange: EditorDocument,
     newTitle: string
   ) => {
-    // const newDocuments = [...documents];
-    // const newDocument = { ...documentToChange };
-    // newDocument.metaData.title = newTitle;
-    // const documentIndex = documents.findIndex(
-    //   (document) => document.uuid === documentToChange.metaData.uuid
-    // );
-    // newDocuments[documentIndex] = newDocument.metaData;
-    // setDocuments(newDocuments);
+    const newDocument = { ...documentToChange };
+    newDocument.metaData.title = newTitle;
+    onSaveDocument(newDocument);
   };
+
+  const documents = documentList ? Object.values(documentList) : [];
 
   return (
     <Wrapper>
-      <Sidebar documents={documents} addDocument={onAddDocument} onOpenDocument={onOpenDocument}/>
+      <Sidebar
+        documents={documents}
+        addDocument={onCreateDocument}
+        onOpenDocument={onOpenDocument}
+      />
       <Page
         key={documentMetdata ? documentMetdata.uuid : null}
         editorDocument={currentDocument}

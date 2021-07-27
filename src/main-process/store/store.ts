@@ -1,3 +1,4 @@
+import { DocumentList, DatabaseList } from 'Models/Types';
 const { ipcMain } = require('electron');
 var levelup = require('levelup');
 var leveldown = require('leveldown');
@@ -18,9 +19,10 @@ export async function setupStore() {
     event.reply(ipcMessages.getAllReply, docs);
   });
 
-  ipcMain.on(ipcMessages.saveDocumentMessage, (event, arg) => {
-    console.log(arg);
-    event.reply(ipcMessages.saveDocumentReply, 'Saved!');
+  ipcMain.on(ipcMessages.saveDocumentMessage, (event, arg: EditorDocument) => {
+    db.put(arg.metaData.uuid, arg, function (err) {
+      event.reply(ipcMessages.saveDocumentReply, 'Saved!');
+    });
   });
 
   ipcMain.on(ipcMessages.getDocumentMessage, async (event, arg) => {
@@ -38,14 +40,17 @@ async function getDocument(db, uuid: string) {
 }
 
 async function getAllDocuments(db) {
-  return new Promise((resolve) => {
-    var docs = [];
-    db.createValueStream()
-      .on('data', (data) => {
-        docs.push(data);
+  return new Promise<DocumentList>((resolve) => {
+    var docs: DocumentList = {};
+    db.createReadStream()
+      .on('data', (data: DatabaseList) => {
+        docs[data.key] = data.value.metaData;
+      })
+      .on('error', function (err) {
+        console.log('Oh my!', err);
       })
       .on('end', () => {
-        if (docs.length > 0) {
+        if (Object.keys(docs).length > 0) {
           resolve(docs);
         } else {
           const dummyDocs = [
@@ -60,8 +65,12 @@ async function getAllDocuments(db) {
             .put(dummyDocs[1].metaData.uuid, dummyDocs[1])
             .put(dummyDocs[2].metaData.uuid, dummyDocs[2])
             .put(dummyDocs[3].metaData.uuid, dummyDocs[3])
-            .write(() => resolve('Added dummy data'));
-          resolve(dummyDocs);
+            .write();
+          docs[dummyDocs[0].metaData.uuid] = dummyDocs[0].metaData;
+          docs[dummyDocs[1].metaData.uuid] = dummyDocs[1].metaData;
+          docs[dummyDocs[2].metaData.uuid] = dummyDocs[2].metaData;
+          docs[dummyDocs[3].metaData.uuid] = dummyDocs[3].metaData;
+          resolve(docs);
         }
       });
   });
