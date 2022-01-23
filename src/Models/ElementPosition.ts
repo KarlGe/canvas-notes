@@ -2,13 +2,13 @@ export default class ElementPosition {
   x: number;
   y: number;
   constructor(x: number, y: number) {
-    this.x = this.min(x);
-    this.y = this.min(y);
+    this.x = x;
+    this.y = y;
   }
 
-  add(xOfset: number, yOfset: number, increment = 10) {
-    this.x = this.min(this.x + xOfset);
-    this.y = this.min(this.y + yOfset);
+  add(xOffset: number, yOffset: number, increment = 10) {
+    this.x = this.min(this.x + xOffset);
+    this.y = this.min(this.y + yOffset);
   }
 
   min(value: number, minValue: number = 0) {
@@ -22,16 +22,16 @@ export default class ElementPosition {
     this.x -= this.x % increment;
     this.y -= this.y % increment;
   }
-  getIncrementedStyle(increment: number) {
+  getIncrementedStyle(increment: number, offset: ElementPosition) {
     if (increment == 0) {
       return {
-        left: this.x,
-        top: this.y,
+        left: this.min(this.x + offset.x),
+        top: this.min(this.y + offset.y),
       };
     }
     return {
-      left: this.x - (this.x % increment),
-      top: this.y - (this.y % increment),
+      left: this.min(this.x - (this.x % increment) + offset.x),
+      top: this.min(this.y - (this.y % increment) + offset.y),
     };
   }
 }

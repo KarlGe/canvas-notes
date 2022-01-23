@@ -4,24 +4,25 @@ import { ReactText } from 'react';
 export default class EditorData {
   uuid: string;
   position: ElementPosition;
+  parentOffset: ElementPosition;
   wrapper: HTMLElement;
 
-  constructor(uuid: string, position: ElementPosition, wrapper: HTMLElement = null) {
+  constructor(uuid: string, position: ElementPosition, parentOffset: ElementPosition, wrapper: HTMLElement = null) {
     this.uuid = uuid;
     this.position = position;
     this.wrapper = wrapper;
+    this.parentOffset = parentOffset;
   }
 
   getInitialClickPosition(
-    additionalOfsetX: number = 0,
-    additionalOfsetY: number = 0
+    additionalOffsetX: number = 0,
+    additionalOffsetY: number = 0
   ) {
     if (this.wrapper) {
-      const { offsetTop, offsetLeft } = this.wrapper;
       const { x, y } = this.position;
       return new ElementPosition(
-        x + offsetLeft + additionalOfsetX,
-        y + offsetTop + additionalOfsetY
+        x + additionalOffsetX,
+        y + additionalOffsetY
       );
     }
     return null;

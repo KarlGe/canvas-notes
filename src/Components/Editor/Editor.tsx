@@ -9,6 +9,7 @@ import { getEditorOptions } from 'Config/quillConfig';
 import { settings } from 'Config/baseConfig';
 import Toolbar from './Toolbar';
 import CloseIcon from 'Assets/icons/close.svg';
+import { useDragPosition } from 'Hooks/useDragPosition';
 
 const borderWidth = 1;
 const headerColor = '#0178ba';
@@ -17,6 +18,7 @@ const borderColor = '#ccc';
 
 type StyledProps = {
   elementPosition: ElementPosition;
+  parentOffset: ElementPosition;
   dragging: Boolean;
   currentIncrement: number;
   editing: Boolean;
@@ -25,7 +27,10 @@ type StyledProps = {
 
 const EditorWrapper = styled.div.attrs((props: StyledProps) => ({
   style: {
-    ...props.elementPosition.getIncrementedStyle(props.currentIncrement),
+    ...props.elementPosition.getIncrementedStyle(
+      props.currentIncrement,
+      props.parentOffset
+    ),
     width: '250px',
   },
 }))`
@@ -109,6 +114,13 @@ export default function Editor(props: {
 
   const [editingLocal, setEditingLocal] = useState(false);
 
+  const { currentPosition, isDragging, startDragging, startDraggingEvent } =
+    useDragPosition(
+      editorData.position,
+      () => setEditingState(false),
+      () => editorRef.current.focus()
+    );
+
   const setEditingState = (isEditing) => {
     if (isEditing) {
       setActiveEditor(editorData.uuid);
@@ -117,69 +129,13 @@ export default function Editor(props: {
     setEditing(isEditing);
   };
 
-  const [dragging, setDragging] = useState(false);
-  const position = useRef(editorData.position);
-  const lastPosition = useRef(
-    editorData.getInitialClickPosition(0, settings.sizes.editorHeaderHeight * -1)
-  );
-  const [currentPosition, setCurrentPosition] = useState(position.current);
-
   const onChange = (delta, value, source) => {
     /* source === api | user */
     if (source === 'api') {
       return;
     }
-
-    // this.html = this.editor.root.innerHTML;
-
-    // if (this.onChangeTimeout) {
-    //   clearTimeout(this.onChangeTimeout);
-    //   this.onChangeTimeout = null;
-    // }
-
-    // this.onChangeTimeout = setTimeout(() => this.commitValue(), 300);
+    
   };
-
-  function startDragging() {
-    // get the mouse cursor position at startup:
-    setDragging(true);
-    document.onmouseup = closeDragElement;
-    // call a function whenever the cursor moves:
-    document.onmousemove = elementDrag;
-  }
-
-  function startDraggingEvent(e) {
-    e = e || window.event;
-    e.preventDefault();
-    lastPosition.current = new ElementPosition(e.clientX, e.clientY);
-    startDragging();
-    setEditingState(false);
-  }
-
-  function elementDrag(e) {
-    e = e || window.event;
-    e.preventDefault();
-    // calculate the new cursor position:
-    const { clientX, clientY } = e;
-    const { x: lastX, y: lastY } = lastPosition.current;
-    position.current.add(clientX - lastX, clientY - lastY);
-    lastPosition.current = new ElementPosition(clientX, clientY);
-    setCurrentPosition(
-      new ElementPosition(position.current.x, position.current.y)
-    );
-  }
-
-  function closeDragElement(e) {
-    setDragging(false);
-    position.current.applyIncrement(currentIncrement);
-    setCurrentPosition(
-      new ElementPosition(position.current.x, position.current.y)
-    );
-    e.preventDefault();
-    editorRef.current.focus();
-    document.onmouseup = null;
-    document.onmousemove = null;
-  }
 
   useEffect(() => {
     const editor = new Quill(
@@ -211,7 +167,8 @@ export default function Editor(props: {
       <Toolbar active={editingLocal || isActive} toolbarId={editorData.uuid} />
       <EditorWrapper
         elementPosition={currentPosition}
-        dragging={dragging}
+        parentOffset={editorData.parentOffset}
+        dragging={isDragging}
         currentIncrement={currentIncrement}
         onMouseDown={stopPropagation}
         onClick={stopPropagation}

@@ -82,18 +82,20 @@ function Page(props: PageProps) {
   const hasActiveEditor = activeEditor !== null;
 
   const documentMouseDown = (e) => {
-    if (editing || hasActiveEditor) {
+    if (editing || hasActiveEditor || !contentRef.current.offsetParent) {
       return;
     }
-    const { offsetTop, offsetLeft } = contentRef.current;
+    const { offsetParent, offsetTop } = contentRef.current;
+    const { offsetLeft } = offsetParent; // We have to get the X offset from the parent
 
-    const { clientX, clientY } = e;
+    const { pageX, pageY } = e;
 
     const editorData = new EditorData(
       getUUID(),
+      new ElementPosition(pageX, pageY),
       new ElementPosition(
-        clientX - offsetLeft,
-        clientY - offsetTop + settings.sizes.editorHeaderHeight
+        offsetLeft * -1,
+        (offsetTop - settings.sizes.editorHeaderHeight) * -1
       ),
       e.target
     );
