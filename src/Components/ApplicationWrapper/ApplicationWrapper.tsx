@@ -4,6 +4,7 @@ import EditorDocument from 'Models/EditorDocument';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useDocumentHandler } from 'Hooks/useDocumentHandler';
+import { MousePosition } from './MousePosition';
 
 const Wrapper = styled.div`
   display: grid;
@@ -36,6 +37,7 @@ export const ApplicationWrapper = (props: {}) => {
 
   return (
     <Wrapper>
+      <MousePosition />
       <Sidebar
         documents={documents}
         addDocument={onCreateDocument}
