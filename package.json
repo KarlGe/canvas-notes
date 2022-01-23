@@ -6,10 +6,10 @@
   "author": "Karlge <karlgeorgsen@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "yarn build && electron ./dist/electron.js",
+    "start": "npm run build && electron ./dist/electron.js",
     "app": "electron ./dist/electron.js",
     "web-dev": "webpack --watch --progress --config webpack.config.js --mode development",
-    "dev": "concurrently \"yarn web-dev\" \"yarn app\"",
+    "dev": "concurrently \"npm run web-dev\" \"npm run app\"",
     "build": "webpack --config ./webpack.config.js"
   },
   "devDependencies": {
@@ -40,7 +40,7 @@
     "typescript": "^3.9.3",
     "url-loader": "^4.1.1",
     "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11",
+    "webpack-cli": "^4.0.0",
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
