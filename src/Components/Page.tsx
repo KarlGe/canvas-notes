@@ -66,11 +66,11 @@ interface PageProps {
   editorDocument: EditorDocument;
   onChangeTitle: (changedDocument: EditorDocument, newTitle: string) => void;
 }
-
+type EditorMap = { [key: string]: EditorData };
 function Page(props: PageProps) {
   const { editorDocument, onChangeTitle } = props;
   const contentRef = useRef(null);
-  const [editors, setEditors] = useState<EditorData[]>([]);
+  const [editors, setEditors] = useState<EditorMap>({});
   const [activeEditor, setActiveEditor] = useState<string>();
   const [editing, setEditing] = useState(false);
   const [parentOffset, setParentOffset] = useState(null);
@@ -106,19 +106,27 @@ function Page(props: PageProps) {
       new ElementPosition(pageX, pageY)
     );
     setActiveEditor(editorData.uuid);
-    setEditors((prevEditors) => [...prevEditors, editorData]);
+    setEditors((prevEditors) => {
+      const newMap = { ...prevEditors };
+      newMap[editorData.uuid] = editorData;
+      return newMap;
+    });
   };
-  const deleteEditor = (editorUuid) => {
-    const newEditors = editors.filter((editor) => editor.uuid !== editorUuid);
+  const deleteEditor = (editorUuid: string) => {
+    const newEditors = { ...editors };
+    delete newEditors[editorUuid];
     setEditors(newEditors);
     setActiveEditor(null);
     setEditing(false);
   };
   const saveEditor = (editorData: EditorData, value: Descendant[]) => {
-    console.log(value);
+    const newEditors = { ...editors };
+    newEditors[editorData.uuid] = editorData.clone().setContent(value);
+    setEditors(newEditors);
+    //TODO: Make this save the actual page in the database
   };
 
-  const editorElements = editors.map((editor) => (
+  const editorElements = Object.values(editors).map((editor) => (
     <Editor
       isActive={activeEditor === editor.uuid}
       parentOffset={parentOffset}

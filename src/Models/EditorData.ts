@@ -7,9 +7,14 @@ export default class EditorData {
   content: Descendant[];
   position: ElementPosition;
 
-  constructor(uuid: string, position: ElementPosition) {
+  constructor(
+    uuid: string,
+    position: ElementPosition,
+    content: Descendant[] = []
+  ) {
     this.uuid = uuid;
     this.position = position;
+    this.content = content;
   }
 
   getInitialClickPosition(
@@ -18,5 +23,14 @@ export default class EditorData {
   ) {
     const { x, y } = this.position;
     return new ElementPosition(x + additionalOffsetX, y + additionalOffsetY);
+  }
+
+  setContent(newContent: Descendant[]) {
+    this.content = newContent;
+    return this;
+  }
+
+  clone() {
+    return new EditorData(this.uuid, this.position, this.content);
   }
 }
