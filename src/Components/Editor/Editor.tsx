@@ -1,116 +1,53 @@
-import React, { useEffect, useRef } from 'react';
-import Quill from 'quill';
-import 'quill/dist/quill.bubble.css';
+import React, { useCallback, useEffect, useRef } from 'react';
+import {
+  Editor as SlateEditor,
+  Element as SlateElement,
+  Text as SlateText,
+  createEditor,
+  Descendant,
+  Transforms,
+} from 'slate';
+import { Slate, Editable, withReact } from 'slate-react';
 import { useState } from 'react';
-import styled from 'styled-components';
-import ElementPosition from 'Models/ElementPosition';
 import EditorData from 'Models/EditorData';
-import { getEditorOptions } from 'Config/quillConfig';
-import { settings } from 'Config/baseConfig';
 import Toolbar from './Toolbar';
 import CloseIcon from 'Assets/icons/close.svg';
 import { useDragPosition } from 'Hooks/useDragPosition';
-
-const borderWidth = 1;
-const headerColor = '#0178ba';
-const headerDarkColor = '#00598a';
-const borderColor = '#ccc';
-
-type StyledProps = {
-  elementPosition: ElementPosition;
-  parentOffset: ElementPosition;
-  dragging: Boolean;
-  currentIncrement: number;
-  editing: Boolean;
-  isActive: Boolean;
-};
-
-const EditorWrapper = styled.div.attrs((props: StyledProps) => ({
-  style: {
-    ...props.elementPosition.getIncrementedStyle(
-      props.currentIncrement,
-      props.parentOffset
-    ),
-    width: '250px',
-  },
-}))`
-  position: absolute;
-  z-index: 0;
-  box-sizing: border-box;
-  &:hover {
-    .header {
-      background: ${(props) => !props.editing && headerColor};
-      cursor: move;
-    }
-    .ql-container {
-      border: ${borderWidth}px solid ${borderColor};
-    }
-  }
-  .debug {
-    display: none;
-    position: absolute;
-    width: max-content;
-    top: -${settings.sizes.editorHeaderHeight * 2}px;
-    z-index: 0;
-  }
-  .header {
-    height: ${settings.sizes.editorHeaderHeight}px;
-    background: ${(props: StyledProps) =>
-      props.dragging && !props.editing ? headerColor : 'transparent'};
-    position: absolute;
-    top: -${settings.sizes.editorHeaderHeight}px;
-    left: 0;
-    right: 0;
-    .close-button {
-      display: none;
-      position: absolute;
-      right: 0;
-      height: 100%;
-      border: none;
-      background: ${headerColor};
-      border-left: 1px solid ${headerDarkColor};
-      &:hover {
-        background: ${headerDarkColor};
-      }
-      > svg:hover {
-        cursor: pointer;
-      }
-    }
-    &:hover {
-      background: ${headerColor};
-      .close-button {
-        display: block;
-      }
-    }
-  }
-  .ql-container {
-    box-sizing: border-box;
-    border: ${(props) =>
-      props.editing || props.isActive
-        ? `${borderWidth}px solid ${borderColor} !important`
-        : `${borderWidth}px solid transparent`};
-  }
-`;
+import { EditorElement, elementTypes } from 'Models/SlateTypes';
+import { EditorWrapper } from './Editor.styles';
+import { useRenderElement } from 'Hooks/useRenderElement';
+import EditorLeaf from '../EditorElements/EditorLeaf';
+import { toggleBlockType, toggleBoldMark } from 'Helpers/editorHelpers';
+import ElementPosition from 'Models/ElementPosition';
 
 export default function Editor(props: {
   editorData: EditorData;
+  parentOffset: ElementPosition;
   currentIncrement: number;
   setEditing: Function;
   isActive: Boolean;
   setActiveEditor: Function;
   deleteEditor: Function;
+  saveEditor: Function;
 }) {
   const {
     editorData,
+    parentOffset,
     currentIncrement,
     isActive,
     setEditing,
     setActiveEditor,
     deleteEditor,
+    saveEditor,
   } = props;
 
-  const editorElement = useRef();
   const editorRef = useRef(null);
+
+  const initialValue: Descendant[] = [
+    { type: elementTypes.paragraph, children: [{ text: '' }] },
+  ];
+  const [value, setValue] = useState<Descendant[]>(initialValue);
+  const [editor] = useState(() => withReact(createEditor()));
 
   const [editingLocal, setEditingLocal] = useState(false);
 
@@ -129,29 +66,22 @@ export default function Editor(props: {
     setEditing(isEditing);
   };
 
-  const onChange = (delta, value, source) => {
-    /* source === api | user */
-    if (source === 'api') {
-      return;
-    }
-    
-  };
 
   useEffect(() => {
-    const editor = new Quill(
-      editorElement.current,
-      getEditorOptions(editorData.uuid)
-    );
-    editor.on('text-change', onChange);
-    editor.on('selection-change', function (range, oldRange, source) {
-      if (range === null && oldRange !== null) {
-        setEditingState(false);
-      } else if (range !== null && oldRange === null) {
-        setEditingState(true);
-      }
-    });
-    editorRef.current = editor;
-    startDragging();
+    // const editor = new Quill(
+    //   editorElement.current,
+    //   getEditorOptions(editorData.uuid)
+    // );
+    // editor.on('text-change', onChange);
+    // editor.on('selection-change', function (range, oldRange, source) {
+    //   if (range === null && oldRange !== null) {
+    //     setEditingState(false);
+    //   } else if (range !== null && oldRange === null) {
+    //     setEditingState(true);
+    //   }
+    // });
+    // editorRef.current = editor;
+    // startDragging();
     return () => {};
   }, []);
 
@@ -162,12 +92,47 @@ export default function Editor(props: {
     }
   };
 
+  const renderElement = useRenderElement();
+
+  const onKeyDown = (event) => {
+    if (!event.ctrlKey) {
+      return;
+    }
+    switch (event.key) {
+      case 'c': {
+        event.preventDefault();
+        toggleBlockType(editor, elementTypes.code);
+        break;
+      }
+      case 'b': {
+        event.preventDefault();
+        toggleBoldMark(editor);
+        break;
+      }
+    }
+  };
+
+  const renderLeaf = useCallback((props) => {
+    return <EditorLeaf {...props} />;
+  }, []);
+
+  const onChange = (newValue) => {
+    setValue(newValue);
+    const shouldSave = editor.operations.some(
+      (op) => 'set_selection' !== op.type
+    );
+    const content = JSON.stringify(newValue);
+    if(shouldSave) {
+      saveEditor(editorData, content);
+    }
+  };
+
   return (
     <div onClick={stopPropagation} onMouseDown={stopPropagation}>
       <Toolbar active={editingLocal || isActive} toolbarId={editorData.uuid} />
       <EditorWrapper
         elementPosition={currentPosition}
-        parentOffset={editorData.parentOffset}
+        parentOffset={parentOffset}
         dragging={isDragging}
         currentIncrement={currentIncrement}
         onMouseDown={stopPropagation}
@@ -175,16 +140,23 @@ export default function Editor(props: {
         editing={editingLocal}
         isActive={isActive}
       >
-        <div className="header" onMouseDown={startDraggingEvent}>
-          <button
-            onClick={() => deleteEditor(editorData.uuid)}
-            className="close-button"
-          >
-            <CloseIcon />
-          </button>
-        </div>
+        <Slate editor={editor} value={value} onChange={onChange}>
+          <div className="header" onMouseDown={startDraggingEvent}>
+            <button
+              onClick={() => deleteEditor(editorData.uuid)}
+              className="close-button"
+            >
+              <CloseIcon />
+            </button>
+          </div>
+          <Editable
+            renderElement={renderElement}
+            className="editable-container"
+            renderLeaf={renderLeaf}
+            onKeyDown={onKeyDown}
+          />
+        </Slate>
         <div className="debug">{`Active: ${isActive} Editing: ${editingLocal} Position: ${currentPosition.x}, ${currentPosition.y}`}</div>
-        <div ref={editorElement} />
       </EditorWrapper>
     </div>
   );

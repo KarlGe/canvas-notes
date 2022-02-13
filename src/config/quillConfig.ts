@@ -1,5 +1,3 @@
-import Quill from 'quill';
-
 export const getEditorOptions = (uuid) => ({
   readOnly: false,
   theme: 'snow',
@@ -28,11 +26,3 @@ export const getEditorOptions = (uuid) => ({
     'clean',
   ],
 });
-
-export const initializeQuill = () => {
-  // Add fonts to whitelist
-  var Font = Quill.import('formats/font');
-  // We do not add Aref Ruqaa since it is the default
-  Font.whitelist = ['mirza', 'roboto'];
-  Quill.register(Font, true);
-};

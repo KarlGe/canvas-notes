@@ -1,30 +1,22 @@
 import ElementPosition from './ElementPosition';
 import { ReactText } from 'react';
+import { Descendant } from 'slate';
 
 export default class EditorData {
   uuid: string;
+  content: Descendant[];
   position: ElementPosition;
-  parentOffset: ElementPosition;
-  wrapper: HTMLElement;
 
-  constructor(uuid: string, position: ElementPosition, parentOffset: ElementPosition, wrapper: HTMLElement = null) {
+  constructor(uuid: string, position: ElementPosition) {
     this.uuid = uuid;
     this.position = position;
-    this.wrapper = wrapper;
-    this.parentOffset = parentOffset;
   }
 
   getInitialClickPosition(
     additionalOffsetX: number = 0,
     additionalOffsetY: number = 0
   ) {
-    if (this.wrapper) {
-      const { x, y } = this.position;
-      return new ElementPosition(
-        x + additionalOffsetX,
-        y + additionalOffsetY
-      );
-    }
-    return null;
+    const { x, y } = this.position;
+    return new ElementPosition(x + additionalOffsetX, y + additionalOffsetY);
   }
 }

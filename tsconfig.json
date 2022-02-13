@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "target": "es5",
+    "target": "es6",
     "allowJs": true,
     "jsx": "react",
     "esModuleInterop": true,
@@ -9,6 +9,7 @@
     "noImplicitAny": false,
     "baseUrl": ".",
     "sourceMap": true,
+    "moduleResolution": "Node",
     "paths": {
       "MainProcess/*": ["./src/main-process/*"],
       "Assets/*": ["./src/assets/*"],

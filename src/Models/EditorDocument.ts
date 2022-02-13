@@ -1,8 +1,9 @@
 import DocumentMetadata from './DocumentMetadata';
+import EditorData from './EditorData';
 
 export default class EditorDocument {
   metaData: DocumentMetadata;
-  content: string;
+  editors: EditorData[];
 
   constructor(metaData: DocumentMetadata = null) {
     if (metaData == null) {

@@ -10,6 +10,7 @@ import Editor from './Editor/Editor';
 import EditableField from './UI/EditableField/EditableField';
 import { settings } from 'Config/baseConfig';
 import EditorDocument from 'Models/EditorDocument';
+import { Descendant } from 'slate';
 
 type StyledTypes = {
   hasActiveEditor: Boolean;
@@ -72,6 +73,7 @@ function Page(props: PageProps) {
   const [editors, setEditors] = useState<EditorData[]>([]);
   const [activeEditor, setActiveEditor] = useState<string>();
   const [editing, setEditing] = useState(false);
+  const [parentOffset, setParentOffset] = useState(null);
 
   if (!editorDocument) {
     return null;
@@ -82,22 +84,26 @@ function Page(props: PageProps) {
   const hasActiveEditor = activeEditor !== null;
 
   const documentMouseDown = (e) => {
-    if (editing || hasActiveEditor || !contentRef.current.offsetParent) {
+    if (editing || hasActiveEditor) {
       return;
     }
-    const { offsetParent, offsetTop } = contentRef.current;
-    const { offsetLeft } = offsetParent; // We have to get the X offset from the parent
+    if (!parentOffset) {
+      const { offsetParent, offsetTop } = contentRef.current;
+      const { offsetLeft } = offsetParent; // We have to get the X offset from the parent
+
+      setParentOffset(
+        new ElementPosition(
+          offsetLeft * -1,
+          (offsetTop - settings.sizes.editorHeaderHeight) * -1
+        )
+      );
+    }
 
     const { pageX, pageY } = e;
 
     const editorData = new EditorData(
       getUUID(),
-      new ElementPosition(pageX, pageY),
-      new ElementPosition(
-        offsetLeft * -1,
-        (offsetTop - settings.sizes.editorHeaderHeight) * -1
-      ),
-      e.target
+      new ElementPosition(pageX, pageY)
     );
     setActiveEditor(editorData.uuid);
     setEditors((prevEditors) => [...prevEditors, editorData]);
@@ -108,17 +114,24 @@ function Page(props: PageProps) {
     setActiveEditor(null);
     setEditing(false);
   };
+  const saveEditor = (editorData: EditorData, value: Descendant[]) => {
+    console.log(value);
+  };
+
   const editorElements = editors.map((editor) => (
     <Editor
       isActive={activeEditor === editor.uuid}
+      parentOffset={parentOffset}
       key={editor.uuid as ReactText}
       setEditing={setEditing}
       editorData={editor}
       currentIncrement={20}
       setActiveEditor={setActiveEditor}
       deleteEditor={deleteEditor}
+      saveEditor={saveEditor}
     />
   ));
+
   return (
     <Document
       hasActiveEditor={hasActiveEditor}
