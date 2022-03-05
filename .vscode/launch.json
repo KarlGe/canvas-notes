@@ -10,6 +10,7 @@
       "windows": {
         "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd"
       },
+      "outputCapture": "std",
       "program": "${workspaceRoot}/dist/electron.js",
       "protocol": "inspector"
     }
