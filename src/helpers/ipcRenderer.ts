@@ -26,7 +26,7 @@ export class IPCRender {
       null
     );
   }
-  public static async saveDocument(document: EditorDocument) {
+  public static async saveDocument(document: EditorDocument): Promise<string> {
     return this.sendMessage(
       ipcMessages.saveDocumentMessage,
       ipcMessages.saveDocumentReply,

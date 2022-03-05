@@ -6,5 +6,5 @@ export interface DocumentList {
 }
 export interface DatabaseList {
   key: string;
-  value: EditorDocument;
+  value: DocumentMetadata;
 }

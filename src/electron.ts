@@ -1,3 +1,5 @@
+import { setupMessageHandler } from "MainProcess/store/messageHandler";
+
 // src/electron.js
 const { app, BrowserWindow, session } = require('electron');
 const {
@@ -6,7 +8,6 @@ const {
 } = require('electron-devtools-installer');
 const path = require('path');
 const os = require('os');
-const { setupStore } = require('MainProcess/store/store');
 
 async function createWindow() {
   // Create the browser window.
@@ -24,7 +25,7 @@ async function createWindow() {
   // and load the index.html of the app.
   win.loadFile('index.html');
 }
-setupStore();
+setupMessageHandler();
 console.log(os.homedir());
 
 app

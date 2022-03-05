@@ -11,6 +11,7 @@ export const useDocumentHandler = () => {
     useState<string>(undefined);
   const [currentDocument, setCurrentDocument] =
     useState<EditorDocument>(undefined);
+  const [shouldSave, setShouldSave] = useState<boolean>(false);
 
   const documentMetdata = currentDocument ? currentDocument.metaData : null;
   const documentTitle = documentMetdata ? documentMetdata.title : null;
@@ -31,11 +32,12 @@ export const useDocumentHandler = () => {
 
   useDebouncedEffect(
     () => {
-      if (currentDocument) {
-        IPCRender.saveDocument(currentDocument);
+      if (currentDocument && shouldSave) {
+        IPCRender.saveDocument(currentDocument).then((savedFileName) => {});
+        setShouldSave(false);
       }
     },
-    [currentDocument, documentTitle],
+    [currentDocument, documentTitle, shouldSave],
     500
   );
 
@@ -43,16 +45,19 @@ export const useDocumentHandler = () => {
     setCurrentDocumentUUID(metaData.uuid);
   };
 
-  const onSaveDocument = (document: EditorDocument) => {
-    setDocumentList({ ...documentList, [document.metaData.uuid]: document.metaData });
-    IPCRender.saveDocument(document);
+  const onSaveDocument = async (document: EditorDocument) => {
+    setDocumentList({
+      ...documentList,
+      [document.metaData.uuid]: document.metaData,
+    });
+    setShouldSave(true);
+    setCurrentDocument(document);
   };
 
-  const onCreateDocument = () => {
+  const onCreateDocument = async () => {
     const documentMetadata = new DocumentMetadata();
     const newDocument = new EditorDocument(documentMetadata);
-    onSaveDocument(newDocument);
-    setCurrentDocument(newDocument);
+    return onSaveDocument(newDocument);
   };
 
   return {
