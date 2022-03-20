@@ -7,7 +7,7 @@ import {
   Descendant,
   Transforms,
 } from 'slate';
-import { Slate, Editable, withReact } from 'slate-react';
+import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
 import { useState } from 'react';
 import EditorData from 'Models/EditorData';
 import Toolbar from './Toolbar';
@@ -55,7 +55,7 @@ export default function Editor(props: {
     useDragPosition(
       editorData.position,
       () => setEditingState(false),
-      () => editorRef.current.focus()
+      () => ReactEditor.focus(editor)
     );
 
   const setEditingState = (isEditing) => {
@@ -66,22 +66,8 @@ export default function Editor(props: {
     setEditing(isEditing);
   };
 
-
   useEffect(() => {
-    // const editor = new Quill(
-    //   editorElement.current,
-    //   getEditorOptions(editorData.uuid)
-    // );
-    // editor.on('text-change', onChange);
-    // editor.on('selection-change', function (range, oldRange, source) {
-    //   if (range === null && oldRange !== null) {
-    //     setEditingState(false);
-    //   } else if (range !== null && oldRange === null) {
-    //     setEditingState(true);
-    //   }
-    // });
-    // editorRef.current = editor;
-    // startDragging();
+    ReactEditor.focus(editor);
     return () => {};
   }, []);
 
@@ -122,7 +108,7 @@ export default function Editor(props: {
       (op) => 'set_selection' !== op.type
     );
     const content = JSON.stringify(newValue);
-    if(shouldSave) {
+    if (shouldSave) {
       saveEditor(editorData, content);
     }
   };
