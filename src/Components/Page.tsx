@@ -71,7 +71,7 @@ function Page(props: PageProps) {
   const { editorDocument, onChangeTitle } = props;
   const contentRef = useRef(null);
   const [editors, setEditors] = useState<EditorMap>({});
-  const [activeEditor, setActiveEditor] = useState<string>();
+  const [activeEditor, setActiveEditor] = useState<string>(null);
   const [editing, setEditing] = useState(false);
   const [parentOffset, setParentOffset] = useState(null);
 
@@ -84,7 +84,9 @@ function Page(props: PageProps) {
   const hasActiveEditor = activeEditor !== null;
 
   const documentMouseDown = (e) => {
+    e.stopPropagation();
     if (editing || hasActiveEditor) {
+      setActiveEditor(null);
       return;
     }
     if (!parentOffset) {
@@ -143,7 +145,7 @@ function Page(props: PageProps) {
   return (
     <Document
       hasActiveEditor={hasActiveEditor}
-      onMouseUp={() => setActiveEditor(null)}
+      onMouseDown={() => setActiveEditor(null)}
     >
       <PageTitle
         value={pageTitle}
