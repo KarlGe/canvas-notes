@@ -2,14 +2,12 @@ import styled from 'styled-components';
 import ElementPosition from 'Models/ElementPosition';
 import { settings } from 'Config/baseConfig';
 
-
 type StyledProps = {
   elementPosition: ElementPosition;
   parentOffset: ElementPosition;
   dragging: Boolean;
   currentIncrement: number;
   editing: Boolean;
-  isActive: Boolean;
 };
 
 const borderWidth = 1;
@@ -77,9 +75,16 @@ export const EditorWrapper = styled.div.attrs((props: StyledProps) => ({
   }
   .editable-container {
     box-sizing: border-box;
-    border: ${(props) =>
-      props.editing || props.isActive
-        ? `${borderWidth}px solid ${borderColor} !important`
-        : `${borderWidth}px solid transparent`};
+    border: ${borderWidth}px dashed ${borderColor};
+  }
+  &.has-content {
+    .editable-container {
+      border-color: transparent;
+    }
+  }
+  &.is-active {
+    .editable-container {
+      border: ${borderWidth}px solid ${borderColor} !important;
+    }
   }
 `;

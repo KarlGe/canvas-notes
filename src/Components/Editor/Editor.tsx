@@ -5,8 +5,8 @@ import {
   Text as SlateText,
   createEditor,
   Descendant,
-  Transforms,
 } from 'slate';
+import classNames from 'classnames';
 import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
 import { useState } from 'react';
 import EditorData from 'Models/EditorData';
@@ -17,7 +17,11 @@ import { EditorElement, elementTypes } from 'Models/SlateTypes';
 import { EditorWrapper } from './Editor.styles';
 import { useRenderElement } from 'Hooks/useRenderElement';
 import EditorLeaf from '../EditorElements/EditorLeaf';
-import { toggleBlockType, toggleBoldMark } from 'Helpers/editorHelpers';
+import {
+  isDescendantsEmpty,
+  toggleBlockType,
+  toggleBoldMark,
+} from 'Helpers/editorHelpers';
 import ElementPosition from 'Models/ElementPosition';
 
 export default function Editor(props: {
@@ -41,13 +45,12 @@ export default function Editor(props: {
     saveEditor,
   } = props;
 
-  const editorRef = useRef(null);
-
   const initialValue: Descendant[] = [
     { type: elementTypes.paragraph, children: [{ text: '' }] },
   ];
   const [value, setValue] = useState<Descendant[]>(initialValue);
   const [editor] = useState(() => withReact(createEditor()));
+  const [isEmpty, setIsEmpty] = useState(true);
 
   const [editingLocal, setEditingLocal] = useState(false);
 
@@ -108,6 +111,7 @@ export default function Editor(props: {
       (op) => 'set_selection' !== op.type
     );
     const content = JSON.stringify(newValue);
+    setIsEmpty(isDescendantsEmpty(newValue));
     if (shouldSave) {
       saveEditor(editorData, content);
     }
@@ -124,7 +128,10 @@ export default function Editor(props: {
         onMouseDown={stopPropagation}
         onClick={stopPropagation}
         editing={editingLocal}
-        isActive={isActive}
+        className={classNames([
+          !isEmpty && 'has-content',
+          isActive && 'is-active',
+        ])}
       >
         <Slate editor={editor} value={value} onChange={onChange}>
           <div className="header" onMouseDown={startDraggingEvent}>

@@ -1,5 +1,5 @@
 import { elementTypes } from 'Models/SlateTypes';
-import { Editor, Element, Node, Text, Transforms } from 'slate';
+import { Descendant, Editor, Element, Node, Text, Transforms } from 'slate';
 
 export const isElementType = (element: Node, elementType: elementTypes) => {
   return (
@@ -42,4 +42,17 @@ export const toggleBlockType = (editor: Editor, elementType: elementTypes) => {
     { type: isActive ? null : elementType },
     { match: (n) => Editor.isBlock(editor, n) }
   );
+};
+
+/**
+ * We consider descendants empty if we can't find a node that contains any content, even if there
+ * are multiple nodes (i.e. linebreaks)
+ * @param content : List of descendants;
+ * @returns boolean
+ */
+export const isDescendantsEmpty = (content: Descendant[]) => {
+  if (content.find((node) => Node.string(node) !== '')) {
+    return false;
+  }
+  return true;
 };
