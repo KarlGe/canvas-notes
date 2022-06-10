@@ -42,12 +42,22 @@ export default class EditorData {
   clone() {
     return new EditorData(this.uuid, this.position, this.content);
   }
+
+  static ToDatabaseEditor = (editor: EditorData) => {
+    const stringifiedContent = JSON.stringify(editor.content);
+    return {
+      ...editor,
+      position: ElementPosition.ToTuple(editor.position),
+      content: stringifiedContent,
+    } as DatabaseEditor;
+  };
+
   static FromDatabaseEditor = (editor: DatabaseEditor) => {
     const { uuid, position, content } = editor;
     const documentContent = JSON.parse(content);
     return new EditorData(
       uuid,
-      new ElementPosition(position.x, position.y),
+      new ElementPosition(position[0], position[1]),
       documentContent
     );
   };

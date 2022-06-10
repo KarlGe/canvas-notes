@@ -5,10 +5,12 @@ export interface IPosition {
   y: number;
 }
 
+export type databasePosition = [number, number];
+
 export class DatabaseEditor {
   uuid: string;
   content: string;
-  position: IPosition;
+  position: databasePosition;
 }
 
 export default class DatabaseDocument {

@@ -20,10 +20,9 @@ export default class EditorDocument {
   ): DatabaseDocument => {
     return {
       ...document,
-      editors: document.editors.map((editor) => {
-        const stringifiedContent = JSON.stringify(editor.content);
-        return { ...editor, content: stringifiedContent };
-      }),
+      editors: document.editors.map((editor) =>
+        EditorData.ToDatabaseEditor(editor)
+      ),
     };
   };
   static ParseDatabaseDocument = (

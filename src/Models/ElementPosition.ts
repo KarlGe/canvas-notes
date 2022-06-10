@@ -39,4 +39,7 @@ export default class ElementPosition implements IPosition {
       top: this.min(this.y - (this.y % increment) + offset.y),
     };
   }
+  static ToTuple = (position: ElementPosition) => {
+    return [position.x, position.y];
+  };
 }

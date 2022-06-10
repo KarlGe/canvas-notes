@@ -81,7 +81,6 @@ export default function Editor(props: {
 
   useEffect(() => {
     ReactEditor.focus(editor);
-    onSaveEditor(currentPosition, value);
   }, []);
 
   const stopPropagation = (e) => {
