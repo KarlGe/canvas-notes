@@ -49,15 +49,26 @@ export default function Editor(props: {
     editorData.content || editorDefaultContent
   );
   const [editor] = useState(() => withReact(createEditor()));
-  const [isEmpty, setIsEmpty] = useState(true);
-
+  const [isEmpty, setIsEmpty] = useState(isDescendantsEmpty(value));
   const [editingLocal, setEditingLocal] = useState(false);
+
+  const onSaveEditor = (
+    position: ElementPosition,
+    editorValue: Descendant[]
+  ) => {
+    saveEditor(new EditorData(editorData.uuid, position, editorValue));
+  };
+
+  const onDragEnd = (newPosition: ElementPosition) => {
+    ReactEditor.focus(editor);
+    onSaveEditor(newPosition, value);
+  };
 
   const { currentPosition, isDragging, startDragging, startDraggingEvent } =
     useDragPosition(
       editorData.position,
       () => setEditingState(false),
-      () => ReactEditor.focus(editor)
+      onDragEnd
     );
 
   const setEditingState = (isEditing) => {
@@ -70,7 +81,7 @@ export default function Editor(props: {
 
   useEffect(() => {
     ReactEditor.focus(editor);
-    return () => {};
+    onSaveEditor(currentPosition, value);
   }, []);
 
   const stopPropagation = (e) => {
@@ -111,7 +122,7 @@ export default function Editor(props: {
     );
     setIsEmpty(isDescendantsEmpty(newValue));
     if (shouldSave) {
-      saveEditor(editorData, newValue);
+      onSaveEditor(currentPosition, newValue);
     }
   };
 

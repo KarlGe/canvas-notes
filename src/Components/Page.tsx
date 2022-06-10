@@ -127,18 +127,23 @@ function Page(props: PageProps) {
     );
   }, [contentRef.current]);
 
+  const savePage = (document: EditorDocument, editors: EditorMap) => {
+    setEditors(editors);
+    onContentSave(document, Object.values(editors));
+  };
+
   const deleteEditor = (editorUuid: string) => {
     const newEditors = { ...editors };
     delete newEditors[editorUuid];
-    setEditors(newEditors);
     setActiveEditor(null);
     setEditing(false);
+    savePage(editorDocument, newEditors);
   };
-  const saveEditor = (editorData: EditorData, value: Descendant[]) => {
+
+  const saveEditor = (editorData: EditorData) => {
     const newEditors = { ...editors };
-    newEditors[editorData.uuid] = editorData.clone().setContent(value);
-    setEditors(newEditors);
-    onContentSave(editorDocument, Object.values(newEditors));
+    newEditors[editorData.uuid] = editorData;
+    savePage(editorDocument, newEditors);
   };
 
   const editorElements = Object.values(editors).map((editor) => (

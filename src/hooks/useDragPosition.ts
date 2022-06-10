@@ -1,7 +1,11 @@
 import ElementPosition from 'Models/ElementPosition';
 import { useEffect, useRef, useState } from 'react';
 
-export const useDragPosition = (initialPosition, onStartDrag, onEndDrag) => {
+export const useDragPosition = (
+  initialPosition,
+  onStartDrag,
+  onEndDrag: (newPosition: ElementPosition) => void
+) => {
   const [isDragging, setIsDragging] = useState(false);
   const position = useRef(initialPosition);
   const lastPosition = useRef(initialPosition);
@@ -9,7 +13,7 @@ export const useDragPosition = (initialPosition, onStartDrag, onEndDrag) => {
 
   function startDragging() {
     setIsDragging(true);
-    document.onmouseup = closeDragElement;
+    document.onmouseup = endDrag;
     document.onmousemove = elementDrag;
   }
 
@@ -47,7 +51,7 @@ export const useDragPosition = (initialPosition, onStartDrag, onEndDrag) => {
     );
   }
 
-  function closeDragElement(e) {
+  function endDrag(e) {
     setIsDragging(false);
     setCurrentPosition(
       new ElementPosition(position.current.x, position.current.y)
@@ -56,7 +60,7 @@ export const useDragPosition = (initialPosition, onStartDrag, onEndDrag) => {
     cleanup();
 
     if (typeof onEndDrag === 'function') {
-      onEndDrag();
+      onEndDrag(currentPosition);
     }
   }
   return {
