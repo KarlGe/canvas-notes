@@ -9,7 +9,7 @@ import {
 import classNames from 'classnames';
 import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
 import { useState } from 'react';
-import EditorData from 'Models/EditorData';
+import EditorData, { editorDefaultContent } from 'Models/EditorData';
 import Toolbar from './Toolbar';
 import CloseIcon from 'Assets/icons/close.svg';
 import { useDragPosition } from 'Hooks/useDragPosition';
@@ -23,10 +23,6 @@ import {
   toggleBoldMark,
 } from 'Helpers/editorHelpers';
 import ElementPosition from 'Models/ElementPosition';
-
-const initialValue: Descendant[] = [
-  { type: elementTypes.paragraph, children: [{ text: '' }] },
-];
 
 export default function Editor(props: {
   editorData: EditorData;
@@ -50,7 +46,7 @@ export default function Editor(props: {
   } = props;
 
   const [value, setValue] = useState<Descendant[]>(
-    editorData.content || initialValue
+    editorData.content || editorDefaultContent
   );
   const [editor] = useState(() => withReact(createEditor()));
   const [isEmpty, setIsEmpty] = useState(true);

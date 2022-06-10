@@ -2,6 +2,14 @@ import ElementPosition from './ElementPosition';
 import { ReactText } from 'react';
 import { Descendant } from 'slate';
 import { DatabaseEditor } from './DatabaseDocument';
+import { elementTypes } from './SlateTypes';
+
+export const editorDefaultContent = [
+  {
+    type: elementTypes.paragraph,
+    children: [{ text: '' }],
+  },
+];
 
 export default class EditorData {
   uuid: string;
@@ -11,7 +19,7 @@ export default class EditorData {
   constructor(
     uuid: string,
     position: ElementPosition,
-    content: Descendant[] = []
+    content: Descendant[] = editorDefaultContent
   ) {
     this.uuid = uuid;
     this.position = position;
