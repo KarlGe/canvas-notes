@@ -44,6 +44,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "classnames": "^2.3.1",
     "encoding-down": "^7.0.0",
     "fs-jetpack": "^4.3.1",
     "leveldown": "^6.0.0",
