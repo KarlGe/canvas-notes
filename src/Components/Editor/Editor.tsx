@@ -24,6 +24,10 @@ import {
 } from 'Helpers/editorHelpers';
 import ElementPosition from 'Models/ElementPosition';
 
+const initialValue: Descendant[] = [
+  { type: elementTypes.paragraph, children: [{ text: '' }] },
+];
+
 export default function Editor(props: {
   editorData: EditorData;
   parentOffset: ElementPosition;
@@ -45,10 +49,9 @@ export default function Editor(props: {
     saveEditor,
   } = props;
 
-  const initialValue: Descendant[] = [
-    { type: elementTypes.paragraph, children: [{ text: '' }] },
-  ];
-  const [value, setValue] = useState<Descendant[]>(initialValue);
+  const [value, setValue] = useState<Descendant[]>(
+    editorData.content || initialValue
+  );
   const [editor] = useState(() => withReact(createEditor()));
   const [isEmpty, setIsEmpty] = useState(true);
 
@@ -110,10 +113,9 @@ export default function Editor(props: {
     const shouldSave = editor.operations.some(
       (op) => 'set_selection' !== op.type
     );
-    const content = JSON.stringify(newValue);
     setIsEmpty(isDescendantsEmpty(newValue));
     if (shouldSave) {
-      saveEditor(editorData, content);
+      saveEditor(editorData, newValue);
     }
   };
 

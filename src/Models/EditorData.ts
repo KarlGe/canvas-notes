@@ -1,6 +1,7 @@
 import ElementPosition from './ElementPosition';
 import { ReactText } from 'react';
 import { Descendant } from 'slate';
+import { DatabaseEditor } from './DatabaseDocument';
 
 export default class EditorData {
   uuid: string;
@@ -33,4 +34,13 @@ export default class EditorData {
   clone() {
     return new EditorData(this.uuid, this.position, this.content);
   }
+  static FromDatabaseEditor = (editor: DatabaseEditor) => {
+    const { uuid, position, content } = editor;
+    const documentContent = JSON.parse(content);
+    return new EditorData(
+      uuid,
+      new ElementPosition(position.x, position.y),
+      documentContent
+    );
+  };
 }

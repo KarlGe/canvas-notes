@@ -15,12 +15,19 @@ const headerColor = '#0178ba';
 const headerDarkColor = '#00598a';
 const borderColor = '#ccc';
 
+const getIncrementedStyle = (props: StyledProps) => {
+  if (!props?.elementPosition?.getIncrementedStyle) {
+    return {};
+  }
+  return props.elementPosition.getIncrementedStyle(
+    props.currentIncrement,
+    props.parentOffset
+  );
+};
+
 export const EditorWrapper = styled.div.attrs((props: StyledProps) => ({
   style: {
-    ...props.elementPosition.getIncrementedStyle(
-      props.currentIncrement,
-      props.parentOffset
-    ),
+    ...getIncrementedStyle(props),
     width: '250px',
   },
 }))`

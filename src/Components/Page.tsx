@@ -1,4 +1,4 @@
-import React, { useRef, ReactText } from 'react';
+import React, { useRef, ReactText, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import styled from 'styled-components';
@@ -65,12 +65,24 @@ const PageTitle = styled(EditableField)`
 interface PageProps {
   editorDocument: EditorDocument;
   onChangeTitle: (changedDocument: EditorDocument, newTitle: string) => void;
+  onContentSave: (
+    documentToSave: EditorDocument,
+    newContent: EditorData[]
+  ) => void;
 }
 type EditorMap = { [key: string]: EditorData };
+
+const createEditorMap = (editorDataList: EditorData[]) => {
+  const map = {};
+  editorDataList?.forEach((editorData) => (map[editorData.uuid] = editorData));
+  return map;
+};
 function Page(props: PageProps) {
-  const { editorDocument, onChangeTitle } = props;
+  const { editorDocument, onChangeTitle, onContentSave } = props;
   const contentRef = useRef(null);
-  const [editors, setEditors] = useState<EditorMap>({});
+  const [editors, setEditors] = useState<EditorMap>(() =>
+    createEditorMap(editorDocument?.editors)
+  );
   const [activeEditor, setActiveEditor] = useState<string>(null);
   const [editing, setEditing] = useState(false);
   const [parentOffset, setParentOffset] = useState(null);
@@ -89,17 +101,6 @@ function Page(props: PageProps) {
       setActiveEditor(null);
       return;
     }
-    if (!parentOffset) {
-      const { offsetParent, offsetTop } = contentRef.current;
-      const { offsetLeft } = offsetParent; // We have to get the X offset from the parent
-
-      setParentOffset(
-        new ElementPosition(
-          offsetLeft * -1,
-          (offsetTop - settings.sizes.editorHeaderHeight) * -1
-        )
-      );
-    }
 
     const { pageX, pageY } = e;
 
@@ -114,6 +115,18 @@ function Page(props: PageProps) {
       return newMap;
     });
   };
+  useEffect(() => {
+    const { offsetParent, offsetTop } = contentRef.current;
+    const { offsetLeft } = offsetParent; // We have to get the X offset from the parent
+
+    setParentOffset(
+      new ElementPosition(
+        offsetLeft * -1,
+        (offsetTop - settings.sizes.editorHeaderHeight) * -1
+      )
+    );
+  }, [contentRef.current]);
+
   const deleteEditor = (editorUuid: string) => {
     const newEditors = { ...editors };
     delete newEditors[editorUuid];
@@ -125,7 +138,7 @@ function Page(props: PageProps) {
     const newEditors = { ...editors };
     newEditors[editorData.uuid] = editorData.clone().setContent(value);
     setEditors(newEditors);
-    //TODO: Make this save the actual page in the database
+    onContentSave(editorDocument, Object.values(newEditors));
   };
 
   const editorElements = Object.values(editors).map((editor) => (

@@ -1,11 +1,16 @@
 import { ipcRenderer } from 'electron';
+import DatabaseDocument from 'Models/DatabaseDocument';
 import EditorDocument from 'Models/EditorDocument';
 import { DocumentList } from 'Models/Types';
 import ipcMessages from './ipcMessages';
 
 export class IPCRender {
-  static async sendMessage(messageName, responseName, value): Promise<any> {
-    return new Promise((resolve) => {
+  static async sendMessage<T = any>(
+    messageName,
+    responseName,
+    value
+  ): Promise<T> {
+    return new Promise<T>((resolve) => {
       ipcRenderer.once(responseName, (event, arg) => {
         resolve(arg);
       });
@@ -13,11 +18,11 @@ export class IPCRender {
     });
   }
   public static async getDocument(uuid: string): Promise<EditorDocument> {
-    return this.sendMessage(
+    return this.sendMessage<DatabaseDocument>(
       ipcMessages.getDocumentMessage,
       ipcMessages.getDocumentReply,
       uuid
-    );
+    ).then((result) => EditorDocument.ParseDatabaseDocument(result));
   }
   public static async getAllDocuments(): Promise<DocumentList> {
     return this.sendMessage(
@@ -30,7 +35,7 @@ export class IPCRender {
     return this.sendMessage(
       ipcMessages.saveDocumentMessage,
       ipcMessages.saveDocumentReply,
-      document
+      EditorDocument.CreateSaveAbleDocument(document)
     );
   }
 }

@@ -1,4 +1,6 @@
-export default class ElementPosition {
+import { IPosition } from './DatabaseDocument';
+
+export default class ElementPosition implements IPosition {
   x: number;
   y: number;
   constructor(x: number, y: number) {
@@ -22,7 +24,10 @@ export default class ElementPosition {
     this.x -= this.x % increment;
     this.y -= this.y % increment;
   }
-  getIncrementedStyle(increment: number, offset: ElementPosition) {
+  getIncrementedStyle(increment: number, offset: IPosition) {
+    if (offset == null) {
+      return null;
+    }
     if (increment == 0) {
       return {
         left: this.min(this.x + offset.x),

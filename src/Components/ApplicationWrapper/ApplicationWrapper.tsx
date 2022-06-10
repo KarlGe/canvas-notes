@@ -5,6 +5,8 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useDocumentHandler } from 'Hooks/useDocumentHandler';
 import { MousePosition } from './MousePosition';
+import EditorData from 'Models/EditorData';
+import DocumentMetadata from 'Models/DocumentMetadata';
 
 const Wrapper = styled.div`
   display: grid;
@@ -28,9 +30,18 @@ export const ApplicationWrapper = (props: {}) => {
     documentToChange: EditorDocument,
     newTitle: string
   ) => {
-    const newDocument = { ...documentToChange };
-    newDocument.metaData.title = newTitle;
-    onSaveDocument(newDocument);
+    const newMetaData = {
+      ...documentToChange.metaData,
+      title: newTitle,
+    } as DocumentMetadata;
+    onSaveDocument(new EditorDocument(newMetaData, documentToChange.editors));
+  };
+
+  const onContentSave = (
+    documentToSave: EditorDocument,
+    newContent: EditorData[]
+  ) => {
+    onSaveDocument(new EditorDocument(documentToSave.metaData, newContent));
   };
 
   const documents = documentList ? Object.values(documentList) : [];
@@ -47,6 +58,7 @@ export const ApplicationWrapper = (props: {}) => {
         key={documentMetdata ? documentMetdata.uuid : null}
         editorDocument={currentDocument}
         onChangeTitle={onChangeTitle}
+        onContentSave={onContentSave}
       />
     </Wrapper>
   );
