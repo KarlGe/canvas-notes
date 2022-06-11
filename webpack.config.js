@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = [
   {
+    name: 'app',
     mode: 'development',
     entry: './src/electron.ts',
     target: 'electron-main',
@@ -32,6 +33,7 @@ module.exports = [
     },
   },
   {
+    name: 'web',
     mode: 'development',
     entry: './src/react.tsx',
     target: 'electron-renderer',

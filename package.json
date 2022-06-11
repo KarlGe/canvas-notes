@@ -8,8 +8,10 @@
   "scripts": {
     "start": "npm run build && electron ./dist/electron.js",
     "app": "electron ./dist/electron.js",
-    "web-dev": "webpack --watch --progress --config webpack.config.js --mode development",
-    "dev": "concurrently \"npm run web-dev\" \"npm run app\"",
+    "watch": "webpack --watch --progress --config webpack.config.js --mode development",
+    "dev": "concurrently \"npm run watch\" \"npm run app\"",
+    "dev:app": "npm run watch -- --config-name app",
+    "dec:web": "npm run watch -- --config-name web",
     "build": "webpack --config ./webpack.config.js"
   },
   "devDependencies": {
