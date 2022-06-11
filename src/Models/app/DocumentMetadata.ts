@@ -4,7 +4,8 @@ export default class DocumentMetadata {
   uuid: string;
   title: string;
   parentId: string;
-  filePath: string;
+  isDirectory: boolean;
+  path: string;
   order: number;
 
   constructor(title: string = 'New Document', uuid: string = null, parentId: string = undefined) {

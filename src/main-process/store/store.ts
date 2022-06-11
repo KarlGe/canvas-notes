@@ -7,9 +7,9 @@ import EditorDocument from 'Models/app/EditorDocument';
 import DocumentMetadata from 'src/Models/app/DocumentMetadata';
 import { saveFile } from './fileManager';
 
-const filePath = './documents-db/.db';
+const path = './documents-db/.db';
 
-export var db = levelup(encode(leveldown(filePath), { valueEncoding: 'json' }));
+export var db = levelup(encode(leveldown(path), { valueEncoding: 'json' }));
 
 export async function saveDocument(
   db,
@@ -44,15 +44,22 @@ export async function getAllDocuments(db) {
           const dummyDocs = [
             new DocumentMetadata('Test 1'),
             new DocumentMetadata('Test 2'),
-            new DocumentMetadata('Test child'),
+            new DocumentMetadata('Test 3'),
             new DocumentMetadata('Test 4'),
           ];
-          dummyDocs[2].parentId = dummyDocs[0].uuid;
 
-          dummyDocs.forEach((documentMetaData) => {
-            documentMetaData.filePath = documentMetaData.title;
+          const child = dummyDocs[2];
+          const parent = dummyDocs[0];
+          parent.title = 'Test Parent';
+          parent.isDirectory = true;
+
+          child.path = `${parent.title}/`;
+
+          dummyDocs.forEach((documentMetaData, index) => {
             saveFile(
-              documentMetaData.filePath,
+              documentMetaData.path,
+              documentMetaData.title,
+              documentMetaData.isDirectory,
               new EditorDocument(documentMetaData)
             );
           });
