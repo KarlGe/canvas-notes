@@ -1,12 +1,12 @@
 import Page from 'Components/Page';
 import Sidebar from 'Components/Sidebar/Sidebar';
-import EditorDocument from 'Models/EditorDocument';
+import EditorDocument from 'Models/app/EditorDocument';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useDocumentHandler } from 'Hooks/useDocumentHandler';
 import { MousePosition } from './MousePosition';
-import EditorData from 'Models/EditorData';
-import DocumentMetadata from 'Models/DocumentMetadata';
+import EditorData from 'Models/app/EditorData';
+import DocumentMetadata from 'src/Models/app/DocumentMetadata';
 
 const Wrapper = styled.div`
   display: grid;

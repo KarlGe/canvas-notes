@@ -1,4 +1,4 @@
-import { elementTypes } from 'Models/SlateTypes';
+import { elementTypes } from 'Models/app/SlateTypes';
 import React, { useCallback } from 'react';
 import { DefaultElement } from 'slate-react';
 import CodeElement from 'src/Components/EditorElements/CodeElement';

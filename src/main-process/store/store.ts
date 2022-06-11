@@ -1,10 +1,10 @@
-import { DocumentList, DatabaseList } from 'Models/Types';
+import { DocumentList, DatabaseList } from 'Models/core/Types';
 const { ipcMain } = require('electron');
 var levelup = require('levelup');
 var leveldown = require('leveldown');
 var encode = require('encoding-down');
-import EditorDocument from 'Models/EditorDocument';
-import DocumentMetadata from 'Models/DocumentMetadata';
+import EditorDocument from 'Models/app/EditorDocument';
+import DocumentMetadata from 'src/Models/app/DocumentMetadata';
 import { saveFile } from './fileManager';
 
 const filePath = './documents-db/.db';
@@ -44,7 +44,7 @@ export async function getAllDocuments(db) {
           const dummyDocs = [
             new DocumentMetadata('Test 1'),
             new DocumentMetadata('Test 2'),
-            new DocumentMetadata('Test 3'),
+            new DocumentMetadata('Test child'),
             new DocumentMetadata('Test 4'),
           ];
           dummyDocs[2].parentId = dummyDocs[0].uuid;

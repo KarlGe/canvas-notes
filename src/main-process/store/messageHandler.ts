@@ -1,7 +1,7 @@
 import { getFile, overWriteFile, saveFile } from './fileManager';
 const { ipcMain } = require('electron');
 import ipcMessages from 'Helpers/ipcMessages';
-import EditorDocument from 'Models/EditorDocument';
+import EditorDocument from 'Models/app/EditorDocument';
 import { db, getAllDocuments, getDocument, saveDocument } from './store';
 
 export async function setupMessageHandler() {

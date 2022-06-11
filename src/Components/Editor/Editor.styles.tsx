@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import ElementPosition from 'Models/ElementPosition';
+import ElementPosition from 'Models/app/ElementPosition';
 import { settings } from 'Config/baseConfig';
 
 type StyledProps = {

@@ -1,7 +1,7 @@
 import ElementPosition from './ElementPosition';
 import { ReactText } from 'react';
 import { Descendant } from 'slate';
-import { DatabaseEditor } from './DatabaseDocument';
+import { DatabaseEditor } from '../database/DatabaseDocument';
 import { elementTypes } from './SlateTypes';
 
 export const editorDefaultContent = [

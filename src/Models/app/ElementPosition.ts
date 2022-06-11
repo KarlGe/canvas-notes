@@ -1,4 +1,4 @@
-import { IPosition } from './DatabaseDocument';
+import IPosition from '../core/IPosition';
 
 export default class ElementPosition implements IPosition {
   x: number;

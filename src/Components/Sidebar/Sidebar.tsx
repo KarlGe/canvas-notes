@@ -1,5 +1,5 @@
 import { settings } from 'Config/baseConfig';
-import DocumentMetadata from 'Models/DocumentMetadata';
+import DocumentMetadata from 'Models/app/DocumentMetadata';
 import React, { ReactElement } from 'react';
 import styled from 'styled-components';
 

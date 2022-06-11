@@ -2,14 +2,14 @@ import React, { useRef, ReactText, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import styled from 'styled-components';
-import EditorData from 'Models/EditorData';
-import ElementPosition from 'Models/ElementPosition';
+import EditorData from 'Models/app/EditorData';
+import ElementPosition from 'Models/app/ElementPosition';
 import { getUUID } from 'Helpers/uuid';
 import CursorAddIcon from 'Assets/icons/cursor-add.inline.svg';
 import Editor from './Editor/Editor';
 import EditableField from './UI/EditableField/EditableField';
 import { settings } from 'Config/baseConfig';
-import EditorDocument from 'Models/EditorDocument';
+import EditorDocument from 'Models/app/EditorDocument';
 import { Descendant } from 'slate';
 
 type StyledTypes = {

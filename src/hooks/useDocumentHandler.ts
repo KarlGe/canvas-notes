@@ -1,7 +1,7 @@
 import { IPCRender } from 'Helpers/ipcRenderer';
-import DocumentMetadata from 'Models/DocumentMetadata';
-import EditorDocument from 'Models/EditorDocument';
-import { DocumentList } from 'Models/Types';
+import DocumentMetadata from 'src/Models/app/DocumentMetadata';
+import EditorDocument from 'Models/app/EditorDocument';
+import { DocumentList } from 'Models/core/Types';
 import { useEffect, useRef, useState } from 'react';
 import { useDebouncedEffect } from './useDebouncedEffect';
 

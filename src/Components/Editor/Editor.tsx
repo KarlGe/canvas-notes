@@ -9,11 +9,11 @@ import {
 import classNames from 'classnames';
 import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
 import { useState } from 'react';
-import EditorData, { editorDefaultContent } from 'Models/EditorData';
+import EditorData, { editorDefaultContent } from 'Models/app/EditorData';
 import Toolbar from './Toolbar';
 import CloseIcon from 'Assets/icons/close.svg';
 import { useDragPosition } from 'Hooks/useDragPosition';
-import { EditorElement, elementTypes } from 'Models/SlateTypes';
+import { EditorElement, elementTypes } from 'Models/app/SlateTypes';
 import { EditorWrapper } from './Editor.styles';
 import { useRenderElement } from 'Hooks/useRenderElement';
 import EditorLeaf from '../EditorElements/EditorLeaf';
@@ -22,7 +22,7 @@ import {
   toggleBlockType,
   toggleBoldMark,
 } from 'Helpers/editorHelpers';
-import ElementPosition from 'Models/ElementPosition';
+import ElementPosition from 'Models/app/ElementPosition';
 
 export default function Editor(props: {
   editorData: EditorData;

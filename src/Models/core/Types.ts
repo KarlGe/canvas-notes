@@ -1,5 +1,5 @@
-import EditorDocument from 'Models/EditorDocument';
-import DocumentMetadata from './DocumentMetadata';
+import EditorDocument from '../app/EditorDocument';
+import DocumentMetadata from '../app/DocumentMetadata';
 
 export interface DocumentList {
   [key: string]: DocumentMetadata;

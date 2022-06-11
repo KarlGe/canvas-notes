@@ -1,5 +1,3 @@
-import EditorDocument from 'Models/EditorDocument';
-import DocumentMetadata from 'Models/DocumentMetadata';
 import * as jetpack from 'fs-jetpack';
 
 const filePath = './documents-db';

@@ -1,4 +1,4 @@
-import ElementPosition from 'Models/ElementPosition';
+import ElementPosition from 'Models/app/ElementPosition';
 import { useEffect, useRef, useState } from 'react';
 
 export const useDragPosition = (

@@ -1,7 +1,6 @@
-import DatabaseDocument, { DatabaseEditor } from './DatabaseDocument';
+import DatabaseDocument from '../database/DatabaseDocument';
 import DocumentMetadata from './DocumentMetadata';
 import EditorData from './EditorData';
-import ElementPosition from './ElementPosition';
 
 export default class EditorDocument {
   metaData: DocumentMetadata;

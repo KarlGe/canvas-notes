@@ -1,4 +1,4 @@
-import { elementTypes } from 'Models/SlateTypes';
+import { elementTypes } from 'Models/app/SlateTypes';
 import { Descendant, Editor, Element, Node, Text, Transforms } from 'slate';
 
 export const isElementType = (element: Node, elementType: elementTypes) => {

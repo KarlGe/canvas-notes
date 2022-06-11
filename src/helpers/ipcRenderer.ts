@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
-import DatabaseDocument from 'Models/DatabaseDocument';
-import EditorDocument from 'Models/EditorDocument';
-import { DocumentList } from 'Models/Types';
+import DatabaseDocument from 'Models/database/DatabaseDocument';
+import EditorDocument from 'Models/app/EditorDocument';
+import { DocumentList } from 'Models/core/Types';
 import ipcMessages from './ipcMessages';
 
 export class IPCRender {

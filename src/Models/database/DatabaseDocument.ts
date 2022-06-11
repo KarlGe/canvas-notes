@@ -1,11 +1,5 @@
-import DocumentMetadata from './DocumentMetadata';
-
-export interface IPosition {
-  x: number;
-  y: number;
-}
-
-export type databasePosition = [number, number];
+import DocumentMetadata from '../app/DocumentMetadata';
+import { databasePosition } from './DatabaseTypes';
 
 export class DatabaseEditor {
   uuid: string;
