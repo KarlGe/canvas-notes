@@ -5,7 +5,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = [
   {
     name: 'app',
-    mode: 'development',
     entry: './src/electron.ts',
     target: 'electron-main',
     devtool: 'source-map',
@@ -34,7 +33,6 @@ module.exports = [
   },
   {
     name: 'web',
-    mode: 'development',
     entry: './src/react.tsx',
     target: 'electron-renderer',
     devtool: 'source-map',
@@ -62,10 +60,7 @@ module.exports = [
            * If we want the svg to be loaded as inline code, for example for URL in CSSwe need to add .inline to the file name
            */
           test: /\.inline.svg$/,
-          issuer: {
-            test: /\.ts(x?)$/,
-          },
-          use: 'url-loader',
+          type: 'asset/inline',
         },
       ],
     },
