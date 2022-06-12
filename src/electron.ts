@@ -1,4 +1,5 @@
 import { setupMessageHandler } from "MainProcess/store/messageHandler";
+import { setupDb } from "MainProcess/store/store";
 
 // src/electron.js
 const { app, BrowserWindow, session } = require('electron');
@@ -37,4 +38,5 @@ app
       .then((name) => console.log(`Added Extension:  ${name}`))
       .catch((err) => console.log('An error occurred: ', err));
   })
+  .then(setupDb)
   .then(createWindow);

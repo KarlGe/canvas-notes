@@ -42,13 +42,13 @@ export const useDocumentHandler = () => {
   );
 
   const onOpenDocument = (metaData: DocumentMetadata) => {
-    setCurrentDocumentUUID(metaData.uuid);
+    setCurrentDocumentUUID(metaData._id);
   };
 
   const onSaveDocument = async (document: EditorDocument) => {
     setDocumentList({
       ...documentList,
-      [document.metaData.uuid]: document.metaData,
+      [document.metaData._id]: document.metaData,
     });
     setShouldSave(true);
     setCurrentDocument(document);

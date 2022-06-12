@@ -55,7 +55,7 @@ export const ApplicationWrapper = (props: {}) => {
         onOpenDocument={onOpenDocument}
       />
       <Page
-        key={documentMetdata ? documentMetdata.uuid : null}
+        key={documentMetdata ? documentMetdata._id : null}
         editorDocument={currentDocument}
         onChangeTitle={onChangeTitle}
         onContentSave={onContentSave}

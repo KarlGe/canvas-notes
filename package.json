@@ -52,7 +52,7 @@
     "fs-jetpack": "^4.3.1",
     "leveldown": "^6.0.0",
     "levelup": "^5.0.1",
-    "search-index": "^3.1.1",
+    "linvodb3": "^3.26.0",
     "slate": "^0.81.0",
     "slate-history": "^0.66.0",
     "slate-react": "^0.81.0",

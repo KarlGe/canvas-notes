@@ -11,11 +11,13 @@ const createFullPath = (
   fileName: string,
   isDirectory: boolean
 ) => {
+  let fullPath;
   if (isDirectory) {
-    return `${path}${fileName}/${makeFileName('index')}`;
+    fullPath = `${path}${fileName}/${makeFileName('index')}`;
   } else {
-    return `${path}${makeFileName(fileName)}`;
+    fullPath = `${path}${makeFileName(fileName)}`;
   }
+  return fullPath.replace(/^\//, '');
 };
 
 export const saveFile = (

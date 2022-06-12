@@ -2,11 +2,16 @@ import { getFile, overWriteFile, saveFile } from './fileManager';
 const { ipcMain } = require('electron');
 import ipcMessages from 'Helpers/ipcMessages';
 import EditorDocument from 'Models/app/EditorDocument';
-import { db, getAllDocuments, getDocument, saveDocument } from './store';
+import {
+  DocumentDb,
+  getAllDocuments,
+  getDocument,
+  saveDocument,
+} from './store';
 
 export async function setupMessageHandler() {
-  ipcMain.on(ipcMessages.getAllMessage, async (event, arg) => {
-    const docs = await getAllDocuments(db);
+  ipcMain.on(ipcMessages.getAllMessage, async (event, path: string) => {
+    const docs = await getAllDocuments(DocumentDb, path);
     event.reply(ipcMessages.getAllReply, docs);
   });
 
@@ -14,8 +19,8 @@ export async function setupMessageHandler() {
     ipcMessages.saveDocumentMessage,
     async (event, newDocument: EditorDocument) => {
       const storedDocumentData = await getDocument(
-        db,
-        newDocument.metaData.uuid
+        DocumentDb,
+        newDocument.metaData._id
       );
 
       if (storedDocumentData?.path) {
@@ -29,16 +34,14 @@ export async function setupMessageHandler() {
         );
       }
 
-      saveDocument(db, storedDocumentData.uuid, newDocument.metaData).then(
-        (err) => {
-          event.reply(ipcMessages.saveDocumentReply, newDocument.metaData.path);
-        }
-      );
+      saveDocument(DocumentDb, newDocument.metaData).then((err) => {
+        event.reply(ipcMessages.saveDocumentReply, newDocument.metaData.path);
+      });
     }
   );
 
   ipcMain.on(ipcMessages.getDocumentMessage, async (event, arg) => {
-    const documentMetaData = await getDocument(db, arg);
+    const documentMetaData = await getDocument(DocumentDb, arg);
     if (documentMetaData.path) {
       const file = await getFile(
         documentMetaData.path,

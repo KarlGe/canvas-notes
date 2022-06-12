@@ -1,18 +1,18 @@
 import { getUUID } from 'Helpers/uuid';
 
 export default class DocumentMetadata {
-  uuid: string;
+  _id: string;
   title: string;
-  parentId: string;
   isDirectory: boolean;
   path: string;
   order: number;
 
-  constructor(title: string = 'New Document', uuid: string = null, parentId: string = undefined) {
+  constructor(
+    title: string = 'New Document',
+    _id: string = null,
+    path = undefined
+  ) {
     this.title = title;
-    this.parentId = parentId;
-    if (uuid == null) {
-      this.uuid = getUUID();
-    }
+    this.path = path || '/';
   }
 }

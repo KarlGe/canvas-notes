@@ -21,7 +21,7 @@ export default function Sidebar(props: SidebarProps): ReactElement {
       <p>Test</p>
       <ul>
         {documents.map((metaData) => (
-          <li key={metaData.uuid} onClick={() => onOpenDocument(metaData)}>
+          <li key={metaData._id} onClick={() => onOpenDocument(metaData)}>
             {metaData?.title}
           </li>
         ))}
